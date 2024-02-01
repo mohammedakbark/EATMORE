@@ -1,3 +1,4 @@
+import 'package:eatmore/model/add_new_item.dart';
 import 'package:eatmore/utils/instence.dart';
 import 'package:eatmore/view%20model/controller.dart';
 import 'package:flutter/material.dart';
@@ -5,17 +6,33 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class AddNewItem extends StatelessWidget {
+class AddNewItem extends StatefulWidget {
   AddNewItem({Key? key}) : super(key: key);
 
-  List<String> category = ["Fast Food", "Biriyani", "Veg", "Non-Veg", "Non"];
-  final itemName = TextEditingController();
-  final itemPrice = TextEditingController();
-  final itemDetail = TextEditingController();
+  @override
+  State<AddNewItem> createState() => _AddNewItemState();
+}
+
+class _AddNewItemState extends State<AddNewItem> {
+  List<String> category = [
+    "Shake",
+    "Juice",
+    "Fast Food",
+    "Biriyani",
+    "Veg",
+    "Non-Veg",
+    "Non"
+  ];
+
+  String? myImage;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<Controller>(context, listen: false);
+    final provider = Provider.of<Controller>(
+      context,
+    );
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -64,7 +81,9 @@ class AddNewItem extends StatelessWidget {
                       // image:controller.itemImage!=null?FileImage(controller.itemImage!): AssetImage("img/mainuploadimage2.jpg"))),
                       child: IconButton(
                           onPressed: () {
-                            controller.addItemImage();
+                            controller.addItemImage().then((value) {
+                              myImage = value;
+                            });
                           },
                           icon: const Icon(
                             Icons.add_box,
@@ -104,7 +123,7 @@ class AddNewItem extends StatelessWidget {
                           return null;
                         }
                       },
-                      controller: itemName,
+                      controller: provider.itemName,
                       decoration: InputDecoration(
                           filled: true,
                           fillColor: HexColor("FDFDFD"),
@@ -180,7 +199,7 @@ class AddNewItem extends StatelessWidget {
                               return null;
                             }
                           },
-                          controller: itemPrice,
+                          controller: provider.itemPrice,
                           decoration: InputDecoration(
                               prefixText: "₹",
                               filled: true,
@@ -222,7 +241,7 @@ class AddNewItem extends StatelessWidget {
                           return null;
                         }
                       },
-                      controller: itemDetail,
+                      controller: provider.itemDetail,
                       maxLines: 4,
                       decoration: InputDecoration(
                           filled: true,
@@ -243,7 +262,30 @@ class AddNewItem extends StatelessWidget {
                     onTap: () async {
                       if (_formKey.currentState?.validate() ?? false) {
                         if (provider.selectedItem != "Non") {
-                          //to do add store
+                          if (provider.itemImage != null) {
+                            database
+                                .addNewProduct(AddNewItemModel(
+                                    itemCategory: provider.selectedItem,
+                                    itemImage: myImage!,
+                                    itemName: provider.itemName.text,
+                                    itemPrice: provider.itemPrice.text,
+                                    moreDetail: provider.itemDetail.text))
+                                .then((value) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                backgroundColor: HexColor("54E70F"),
+                                content: const Text('Item added successful'),
+                              ));
+
+                              provider.clearData();
+                              Navigator.of(context).pop();
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text('pick image'),
+                            ));
+                          }
                         } else {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(

@@ -8,6 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Controller with ChangeNotifier {
+  final itemName = TextEditingController();
+
+  final itemPrice = TextEditingController();
+
+  final itemDetail = TextEditingController();
+
   File? itemImage;
   final firbaseStorage = FirebaseStorage.instance;
   Future addItemImage() async {
@@ -36,5 +42,15 @@ class Controller with ChangeNotifier {
   selectItem(value) {
     selectedItem = value;
     notifyListeners();
+  }
+
+  clearData() {
+    itemImage = null;
+    itemDetail.clear();
+    itemPrice.clear();
+    itemName.clear();
+    selectedItem = "Non";
+    notifyListeners();
+    
   }
 }

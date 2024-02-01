@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatmore/model/add_new_item.dart';
 import 'package:eatmore/model/user_model.dart';
-import 'package:eatmore/view/modules/admin/addnewiteam.dart';
 import 'package:flutter/material.dart';
 
 class Database with ChangeNotifier {
