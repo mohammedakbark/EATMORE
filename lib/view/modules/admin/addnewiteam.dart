@@ -1,6 +1,7 @@
 import 'package:eatmore/model/add_new_item.dart';
 import 'package:eatmore/utils/instence.dart';
 import 'package:eatmore/view%20model/controller.dart';
+import 'package:eatmore/view%20model/database.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
@@ -258,61 +259,70 @@ class _AddNewItemState extends State<AddNewItem> {
                 SizedBox(
                   height: height * .02,
                 ),
-                InkWell(
-                    onTap: () async {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        if (provider.selectedItem != "Non") {
-                          if (provider.itemImage != null) {
-                            database
-                                .addNewProduct(AddNewItemModel(
-                                    itemCategory: provider.selectedItem,
-                                    itemImage: myImage!,
-                                    itemName: provider.itemName.text,
-                                    itemPrice: provider.itemPrice.text,
-                                    moreDetail: provider.itemDetail.text))
-                                .then((value) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                backgroundColor: HexColor("54E70F"),
-                                content: const Text('Item added successful'),
-                              ));
+                Consumer<Database>(builder: (context, datapro, child) {
+                  return InkWell(
+                      onTap: () async {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          if (provider.selectedItem != "Non") {
+                            if (provider.itemImage != null) {
+                              await database
+                                  .addNewProduct(AddNewItemModel(
+                                    rating: 4,
+                                      itemCategory: provider.selectedItem,
+                                      itemImage: myImage!,
+                                      itemName: provider.itemName.text,
+                                      itemPrice: provider.itemPrice.text,
+                                      moreDetail: provider.itemDetail.text))
+                                  .then((value) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  backgroundColor: HexColor("54E70F"),
+                                  content: const Text('Item added successful'),
+                                ));
 
-                              provider.clearData();
-                              Navigator.of(context).pop();
-                            });
+                                provider.clearData();
+                                datapro.fetchAddedItems(true);
+                                Navigator.of(context).pop();
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text('pick image'),
+                              ));
+                            }
                           } else {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
-                              content: Text('pick image'),
+                              content: Text('Select category'),
                             ));
                           }
                         } else {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text('Select category'),
-                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Please fill in all the required fields.'),
+                            ),
+                          );
                         }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content:
-                                Text('Please fill in all the required fields.'),
-                          ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 50,
-                      width: 295,
-                      decoration: BoxDecoration(
-                          color: HexColor("54E70F"),
-                          borderRadius: BorderRadius.circular(25)),
-                      child: const Text(
-                        "Submit",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ))
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 50,
+                        width: 295,
+                        decoration: BoxDecoration(
+                            color: HexColor("54E70F"),
+                            borderRadius: BorderRadius.circular(25)),
+                        child: provider.processingImage == false
+                            ? const Text(
+                                "Submit",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              )
+                            : CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                      ));
+                })
               ],
             ),
           ),

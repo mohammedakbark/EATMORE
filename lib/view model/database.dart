@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatmore/model/add_new_item.dart';
 import 'package:eatmore/model/user_model.dart';
+import 'package:eatmore/utils/instence.dart';
 import 'package:flutter/material.dart';
 
 class Database with ChangeNotifier {
@@ -13,11 +14,17 @@ class Database with ChangeNotifier {
 
   addNewProduct(AddNewItemModel addNewItem) async {
     final doc = db.collection("Items").doc();
-    doc.set(addNewItem.toJson(doc.id));
-    notifyListeners();
+    await doc.set(addNewItem.toJson(doc.id)).then((value) async {
+      notifyListeners();
+    });
   }
 
   //--------------------------------delete
+  deleteItem(selectedId) {
+    db.collection("Items").doc(selectedId).delete();
+    notifyListeners();
+  }
+
   //--------------------------------update
   updateUserData(currentUid, UserModel usermodel, context) async {
     await db
@@ -31,6 +38,14 @@ class Database with ChangeNotifier {
     notifyListeners();
   }
 
+  updatitemData(selectedId,newdetail,newprice) async {
+    db.collection("Items").doc(selectedId).update({
+      "moreDetail": newdetail,
+      "itemPrice": newprice
+    });
+    notifyListeners();
+  }
+
   //--------------------------------read
   UserModel? usermodel;
   fethcurrentUser(currentID) async {
@@ -38,6 +53,19 @@ class Database with ChangeNotifier {
         await db.collection("User").doc(currentID).get();
     if (docSnap.exists) {
       usermodel = UserModel.fromJson(docSnap.data()!);
+    }
+  }
+
+  List<AddNewItemModel> itemList = [];
+  fetchAddedItems(bool listen) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await db.collection("Items").get();
+
+    itemList = snapshot.docs.map((e) {
+      return AddNewItemModel.fromJson(e.data());
+    }).toList();
+    if (listen) {
+      notifyListeners();
     }
   }
 }

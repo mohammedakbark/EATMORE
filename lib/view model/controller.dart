@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Controller with ChangeNotifier {
+  bool processingImage = false;
   final itemName = TextEditingController();
 
   final itemPrice = TextEditingController();
@@ -17,6 +18,8 @@ class Controller with ChangeNotifier {
   File? itemImage;
   final firbaseStorage = FirebaseStorage.instance;
   Future addItemImage() async {
+    processingImage = true;
+    notifyListeners();
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     SettableMetadata metadata = SettableMetadata(contentType: 'image/jpeg');
@@ -31,7 +34,7 @@ class Controller with ChangeNotifier {
           .putFile(itemImage!, metadata);
       TaskSnapshot snapshot = await uploadTask;
       String downloadURL = await snapshot.ref.getDownloadURL();
-
+      processingImage = false;
       notifyListeners();
       return downloadURL;
     }
@@ -51,6 +54,5 @@ class Controller with ChangeNotifier {
     itemName.clear();
     selectedItem = "Non";
     notifyListeners();
-    
   }
 }

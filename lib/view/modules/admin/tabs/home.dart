@@ -1,11 +1,13 @@
+import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/admin/homepagefoodlist.dart';
 import 'package:eatmore/view/modules/admin/profile.dart';
+import 'package:eatmore/view/modules/admin/tabs/myfoodlist.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:fl_chart/fl_chart.dart';
-
+import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -20,15 +22,15 @@ class Home extends StatelessWidget {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           actions: [
-             IconButton(onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Profile(),
-                  ));
-            }, icon: const Icon(CupertinoIcons.person)),
-
-
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Profile(),
+                      ));
+                },
+                icon: const Icon(CupertinoIcons.person)),
             const SizedBox(width: 25),
           ],
         ),
@@ -491,9 +493,15 @@ class Home extends StatelessWidget {
                     " Popular",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                   ),
-                  Text(
-                    " Show All",
-                    style: TextStyle(color: HexColor("A8A7A7")),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const MyfoodList()));
+                    },
+                    child: Text(
+                      " Show All",
+                      style: TextStyle(color: HexColor("A8A7A7")),
+                    ),
                   ),
                 ],
               ),
@@ -501,56 +509,74 @@ class Home extends StatelessWidget {
 
             SizedBox(
               height: 165,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(5),
-                scrollDirection: Axis.horizontal,
-                itemCount: Popular.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 8.0, right: 8),
-                    child: SizedBox(
-                      height: 135,
-                      width: 185,
-                      child: Column(
-                        children: [
-                          Container(
-                            height:
-                                110, // Set a specific height for the image container
-                            width: 185,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: Popular[index]['image'],
-                                ),
-                                borderRadius: BorderRadius.circular(8)),
+              child: Consumer<Database>(builder: (context, databasepro, child) {
+                return FutureBuilder(
+                    future: databasepro.fetchAddedItems(false),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: HexColor("54E70F"),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        );
+                      }
+                      final data = databasepro.itemList;
+                      return ListView.builder(
+                        padding: const EdgeInsets.all(5),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 8.0, right: 8),
+                            child: SizedBox(
+                              height: 135,
+                              width: 185,
+                              child: Column(
                                 children: [
-                                  Text(
-                                    Popular[index]['title'],
-                                    style:
-                                        const TextStyle(fontWeight: FontWeight.bold),
+                                  Container(
+                                    height:
+                                        110, // Set a specific height for the image container
+                                    width: 185,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                data[index].itemImage)),
+                                        borderRadius: BorderRadius.circular(8)),
                                   ),
-                                  Popular[index]['ratingbar']
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            data[index].itemName,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          ratingBar(
+                                              data[index].rating.toDouble())
+                                        ],
+                                      ),
+                                      Text(
+                                        data[index].itemPrice,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
-                              Text(
-                                Popular[index]['rate'],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                            ),
+                          );
+                        },
+                      );
+                    });
+              }),
             )
           ]),
         ),
