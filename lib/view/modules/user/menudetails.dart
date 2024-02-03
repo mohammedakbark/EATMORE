@@ -1,13 +1,28 @@
+import 'package:eatmore/model/cart_item_model.dart';
+import 'package:eatmore/utils/const.dart';
+import 'package:eatmore/utils/instence.dart';
+import 'package:eatmore/view/modules/user/cart.dart';
+import 'package:eatmore/view/widgets/rating_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-import 'cart.dart';
-
 class MenuDetails extends StatefulWidget {
+  String img;
+  String name;
+  String details;
+  String price;
+  num rating;
+  String itemId;
+
   MenuDetails(
-      {super.key, required this.img, required this.name, required this.price});
-  var img, name, price;
+      {super.key,
+      required this.itemId,
+      required this.img,
+      required this.details,
+      required this.name,
+      required this.rating,
+      required this.price});
+
   @override
   State<MenuDetails> createState() => _MenuDetailsState();
 }
@@ -45,8 +60,8 @@ class _MenuDetailsState extends State<MenuDetails> {
                 height: 205,
                 width: 270,
                 decoration: BoxDecoration(
-                    image:
-                        DecorationImage(fit: BoxFit.cover, image: widget.img)),
+                    image: DecorationImage(
+                        fit: BoxFit.cover, image: NetworkImage(widget.img))),
               ),
             ),
             SizedBox(
@@ -86,29 +101,14 @@ class _MenuDetailsState extends State<MenuDetails> {
                       fontSize: 24,
                     ),
                   ),
-                  RatingBar.builder(
-                    initialRating: 4.5,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemSize: 15,
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: HexColor("FFE120"),
-                    ),
-                    onRatingUpdate: (rating) {
-                      // Handle rating updates here
-                      print(rating);
-                    },
-                  ),
+                  ratingBar(widget.rating.toDouble())
                 ],
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 0.0, right: 15, bottom: 20),
               child: Text(
-                '''Get ready for a flavor-packed adventurewith our samosas! These golden, crispy delights are like flavor bombs, explodingwith each bite. Ideal for satisfying yousnack cravings at our canteen.''',
+                widget.details,
                 style: TextStyle(
                     fontSize: 20, color: Colors.black.withOpacity(.5)),
               ),
@@ -133,14 +133,23 @@ class _MenuDetailsState extends State<MenuDetails> {
                   child: Center(
                       child: InkWell(
                     onTap: () {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) => Carts(
-                      //           img: widget.img,
-                      //           name: widget.name,
-                      //           price: widget.price),
-                      //     ));
+                      database
+                          .addToCart(CartItemModel(
+                              itemId: widget.itemId,
+                              itemImage: widget.img,
+                              itemName: widget.name,
+                              itemPrice: widget.price))
+                          .then((value) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                dismissDirection: DismissDirection.up,
+                                backgroundColor:
+                                    Color.fromARGB(255, 29, 212, 36),
+                                content:
+                                    Text("Adding to  Cart is Successful...!")));
+                        Navigator.of(context).pop();
+                      });
+                     
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -159,21 +168,21 @@ class _MenuDetailsState extends State<MenuDetails> {
                 const SizedBox(
                   height: 20,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 15.0),
-                  child: Center(
-                      child: Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    width: 295,
-                    decoration: BoxDecoration(
-                        color: HexColor("54E70F"),
-                        borderRadius: BorderRadius.circular(25)),
-                    child: const Text("Buy Now",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w500)),
-                  )),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(right: 15.0),
+                //   child: Center(
+                //       child: Container(
+                //     alignment: Alignment.center,
+                //     height: 50,
+                //     width: 295,
+                //     decoration: BoxDecoration(
+                //         color: HexColor("54E70F"),
+                //         borderRadius: BorderRadius.circular(25)),
+                //     child: const Text("Buy Now",
+                //         style: TextStyle(
+                //             color: Colors.white, fontWeight: FontWeight.w500)),
+                //   )),
+                // ),
                 SizedBox(
                   height: height * .05,
                 )

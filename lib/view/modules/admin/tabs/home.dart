@@ -2,6 +2,7 @@ import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/admin/homepagefoodlist.dart';
 import 'package:eatmore/view/modules/admin/profile.dart';
 import 'package:eatmore/view/modules/admin/tabs/myfoodlist.dart';
+import 'package:eatmore/view/widgets/rating_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -511,7 +512,7 @@ class Home extends StatelessWidget {
               height: 165,
               child: Consumer<Database>(builder: (context, databasepro, child) {
                 return FutureBuilder(
-                    future: databasepro.fetchAddedItems(false),
+                    future: databasepro.fetchPopularItems(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(
@@ -520,7 +521,7 @@ class Home extends StatelessWidget {
                           ),
                         );
                       }
-                      final data = databasepro.itemList;
+                      final data = databasepro.popularItemsList;
                       return ListView.builder(
                         padding: const EdgeInsets.all(5),
                         scrollDirection: Axis.horizontal,

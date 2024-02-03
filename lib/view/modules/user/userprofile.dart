@@ -1,5 +1,6 @@
 import 'package:eatmore/utils/instence.dart';
 import 'package:eatmore/view%20model/database.dart';
+import 'package:eatmore/view/modules/user/cart.dart';
 import 'package:eatmore/view/modules/user/favorite.dart';
 import 'package:eatmore/view/modules/user/notifications.dart';
 import 'package:eatmore/view/modules/user/tabs/preebooking.dart';
@@ -136,21 +137,27 @@ class _UserProfileState extends State<UserProfile> {
               const SizedBox(
                 height: 10,
               ),
-              Container(
-                height: 65,
-                width: 295,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: HexColor("E1FED3")),
-                child: ListTile(
-                  leading: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.card_travel,
-                        color: HexColor('FF7622'),
-                      )),
-                  title: const Text("Cart"),
-                  trailing: const Icon(Icons.arrow_right),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Carts()));
+                },
+                child: Container(
+                  height: 65,
+                  width: 295,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: HexColor("E1FED3")),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.card_travel,
+                          color: HexColor('FF7622'),
+                        )),
+                    title: const Text("Cart"),
+                    trailing: const Icon(Icons.arrow_right),
+                  ),
                 ),
               ),
               InkWell(

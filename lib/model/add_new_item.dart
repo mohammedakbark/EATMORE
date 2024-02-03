@@ -6,10 +6,12 @@ class AddNewItemModel {
   String itemPrice;
   String moreDetail;
   num rating;
+  bool popular;
 
   AddNewItemModel(
       {required this.itemCategory,
       required this.rating,
+      required this.popular,
       this.itemId,
       required this.itemImage,
       required this.itemName,
@@ -18,7 +20,8 @@ class AddNewItemModel {
 
   Map<String, dynamic> toJson(id) => {
         "itemId": id,
-        "rating":rating,
+        "rating": rating,
+        "popular": popular,
         "itemName": itemName,
         "itemImage": itemImage,
         "itemCategory": itemCategory,
@@ -27,7 +30,8 @@ class AddNewItemModel {
       };
   factory AddNewItemModel.fromJson(Map<String, dynamic> json) =>
       AddNewItemModel(
-        rating:json["rating"],
+          popular: json["popular"],
+          rating: json["rating"],
           itemCategory: json["itemCategory"],
           itemId: json["itemId"],
           itemImage: json["itemImage"],

@@ -15,15 +15,7 @@ class AddNewItem extends StatefulWidget {
 }
 
 class _AddNewItemState extends State<AddNewItem> {
-  List<String> category = [
-    "Shake",
-    "Juice",
-    "Fast Food",
-    "Biriyani",
-    "Veg",
-    "Non-Veg",
-    "Non"
-  ];
+  List<String> category = ["Snacks", "Non-Veg", "Veg", "Drinks", "Non"];
 
   String? myImage;
 
@@ -31,9 +23,7 @@ class _AddNewItemState extends State<AddNewItem> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<Controller>(
-      context,
-    );
+    final provider = Provider.of<Controller>(context);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -183,42 +173,81 @@ class _AddNewItemState extends State<AddNewItem> {
                 SizedBox(
                   height: height * .01,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 40),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: SizedBox(
-                        height: height * .06,
-                        width: width * .3,
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "fill this required field";
-                            } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                              return "field is not correct value";
-                            } else {
-                              return null;
-                            }
-                          },
-                          controller: provider.itemPrice,
-                          decoration: InputDecoration(
-                              prefixText: "₹",
-                              filled: true,
-                              fillColor: HexColor("FDFDFD"),
-                              focusedBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.black12)),
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.black26)),
-                              errorBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.black12)),
-                              focusedErrorBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.black26))),
-                        )),
-                  ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: SizedBox(
+                            height: height * .06,
+                            width: width * .25,
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "fill this required field";
+                                } else if (!RegExp(r'^[0-9]+$')
+                                    .hasMatch(value)) {
+                                  return "field is not correct value";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              keyboardType: TextInputType.number,
+                              controller: provider.itemPrice,
+                              decoration: InputDecoration(
+                                  prefixText: "₹",
+                                  filled: true,
+                                  fillColor: HexColor("FDFDFD"),
+                                  focusedBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.black12)),
+                                  enabledBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.black26)),
+                                  errorBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.black12)),
+                                  focusedErrorBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.black26))),
+                            )),
+                      ),
+                    ),
+                    SizedBox(
+                      width: width * .3,
+                      child: RadioListTile(
+                          fillColor: MaterialStatePropertyAll(Colors.red),
+                          title: const Text(
+                            "Random",
+                            style: TextStyle(
+                                fontSize: 8, fontWeight: FontWeight.w900),
+                          ),
+                          value: 1,
+                          groupValue: provider.selectedRadio,
+                          onChanged: (value) {
+                            print(value);
+                            provider.onTheItemPopularChange(value);
+                          }),
+                    ),
+                    SizedBox(
+                      width: width * .3,
+                      child: RadioListTile(
+                          fillColor:
+                              MaterialStatePropertyAll(HexColor("54E70F")),
+                          title: const Text(
+                            "Popular",
+                            style: TextStyle(
+                                fontSize: 8, fontWeight: FontWeight.w900),
+                          ),
+                          value: 2,
+                          groupValue: provider.selectedRadio,
+                          onChanged: (value) {
+                            print(value);
+                            provider.onTheItemPopularChange(value);
+                          }),
+                    )
+                  ],
                 ),
                 SizedBox(
                   height: height * .02,
@@ -267,7 +296,10 @@ class _AddNewItemState extends State<AddNewItem> {
                             if (provider.itemImage != null) {
                               await database
                                   .addNewProduct(AddNewItemModel(
-                                    rating: 4,
+                                      rating: 4,
+                                      popular: provider.selectedRadio == 1
+                                          ? false
+                                          : true,
                                       itemCategory: provider.selectedItem,
                                       itemImage: myImage!,
                                       itemName: provider.itemName.text,

@@ -9,6 +9,30 @@ import 'package:image_picker/image_picker.dart';
 
 class Controller with ChangeNotifier {
   bool processingImage = false;
+  int quantity = 0;
+  int totatlPrice = 0;
+  incrementQunatity(price) {
+    quantity++;
+    int pr = int.parse(price);
+    totatlPrice = pr * quantity;
+    notifyListeners();
+  }
+
+  decrementQunatity(price) {
+    quantity--;
+    int pr = int.parse(price);
+    if (totatlPrice != 0) {
+      totatlPrice = totatlPrice - pr;
+    }
+    notifyListeners();
+  }
+
+  int selectedRadio = 1;
+  onTheItemPopularChange(value) {
+    selectedRadio = value;
+    notifyListeners();
+  }
+
   final itemName = TextEditingController();
 
   final itemPrice = TextEditingController();

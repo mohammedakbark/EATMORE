@@ -9,3 +9,4 @@ final indicator = Center(
 const adminUid = "iQOMmn4sZsV5n8FmLUuMAJitA162";
 const adminEmial = "admin@gmail.com";
 const adminpass = "123456";
+final green =  HexColor("54E70F");

@@ -1,9 +1,7 @@
 import 'package:eatmore/firebase_options.dart';
-import 'package:eatmore/utils/instence.dart';
 import 'package:eatmore/view%20model/authentication.dart';
 import 'package:eatmore/view%20model/controller.dart';
 import 'package:eatmore/view%20model/database.dart';
-import 'package:eatmore/view/user0radmin.dart';
 import 'package:eatmore/view/usersplashscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
