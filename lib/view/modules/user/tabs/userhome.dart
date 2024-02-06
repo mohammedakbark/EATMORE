@@ -5,6 +5,7 @@ import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/admin/homepagefoodlist.dart';
 import 'package:eatmore/view/modules/user/menudetails.dart';
 import 'package:eatmore/view/modules/user/userprofile.dart';
+import 'package:eatmore/view/widgets/rating_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -159,7 +160,7 @@ class UserHome extends StatelessWidget {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => MenuDetails(
-                                                itemId: data[index].itemId!,
+                                                  itemId: data[index].itemId!,
                                                   name: data[index].itemName,
                                                   rating: data[index].rating,
                                                   details:
@@ -268,24 +269,9 @@ class UserHome extends StatelessWidget {
                                               ),
                                             ],
                                           ),
-                                          // RatingBar.builder(
-                                          // initialRating: 4.5,
-                                          // minRating: 1,
-                                          // direction: Axis.horizontal,
-                                          // allowHalfRating: true,
-                                          // itemCount: 5,
-                                          // itemSize: 15,
-                                          // itemBuilder: (context, _) => Icon(
-                                          // Icons.star,
-                                          // color: HexColor("FFE120"),
-                                          // ),
-                                          // onRatingUpdate: (rating) {
-                                          // // Handle rating updates here
-                                          // print(rating);
-                                          // },
-                                          // ),
+                                          
 
-                                          Popular[index]['ratingbar']
+                                          ratingBar(data[index].rating)
                                         ],
                                       ),
                                     ],

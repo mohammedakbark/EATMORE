@@ -1,5 +1,3 @@
-
-
 import 'package:eatmore/view/modules/user/tabs/preebooking.dart';
 import 'package:eatmore/view/modules/user/tabs/token.dart';
 import 'package:eatmore/view/modules/user/tabs/userhome.dart';
@@ -19,14 +17,13 @@ class _UserBottomNavigationState extends State<UserBottomNavigation> {
   var indexnum = 0;
   List<Widget> pot = [
     const UserHome(),
-     const Tokens(),
-     PreeBooking(),
-  const UserMenue()
+    const Tokens(),
+    PreeBooking(),
+    const UserMenue()
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       bottomNavigationBar: Container(
         height: 70,
         decoration: const BoxDecoration(

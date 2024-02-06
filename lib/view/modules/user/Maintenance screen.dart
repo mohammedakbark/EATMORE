@@ -1,3 +1,5 @@
+import 'package:eatmore/view/modules/user/navigation_user.dart';
+import 'package:eatmore/view/modules/user/tabs/userhome.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -23,14 +25,33 @@ class _MaintenanceState extends State<Maintenance> {
             "img/Maintenance screen.png",
             width: 265,
           ),
-          const Text("We’re under maintenance",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 19),),
-          const SizedBox(height: 15,),
-          Text("Please check back soon just putting little touch",style: TextStyle(color: HexColor("6B6E82")),),
-          Text("up on some pretty updates.",style: TextStyle(color: HexColor("6B6E82")),),
-          const SizedBox(height: 15,),
-          InkWell(onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const Maintenance(),));
-          },
+          const Text(
+            "We’re under maintenance",
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 19),
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Text(
+            "Please check back soon just putting little touch",
+            style: TextStyle(color: HexColor("6B6E82")),
+          ),
+          Text(
+            "up on some pretty updates.",
+            style: TextStyle(color: HexColor("6B6E82")),
+          ),
+          const Expanded(
+              child: SizedBox(
+            height: 15,
+          )),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UserBottomNavigation(),
+                  ));
+            },
             child: Container(
               alignment: Alignment.center,
               height: 50,
@@ -48,6 +69,9 @@ class _MaintenanceState extends State<Maintenance> {
               ),
             ),
           ),
+          const SizedBox(
+            height: 50,
+          )
         ]),
       ),
     );

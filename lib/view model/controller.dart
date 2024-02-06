@@ -1,30 +1,50 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/user/sign/signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class Controller with ChangeNotifier {
   bool processingImage = false;
-  int quantity = 0;
-  int totatlPrice = 0;
-  incrementQunatity(price) {
-    quantity++;
-    int pr = int.parse(price);
-    totatlPrice = pr * quantity;
+  DateTime selectedDate = DateTime.now();
+  String? pickedate;
+  selectedate(context) async {
+    selectedDate = (await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2023, 1, 1),
+        lastDate: DateTime(2050, 12, 31)))!;
+    pickedate =
+        "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
     notifyListeners();
   }
 
-  decrementQunatity(price) {
+  Future<int?> incrementQunatity(
+      price, int currentTotalPrice, int quantity, context, docId) async {
+    quantity++;
+    int pr = int.parse(price);
+    currentTotalPrice = pr * quantity;
+    Provider.of<Database>(context, listen: false)
+        .updateCartPric(docId, currentTotalPrice, quantity);
+    notifyListeners();
+  }
+
+  decrementQunatity(
+      price, int quantity, int currentTotalPrice, context, docId) {
     quantity--;
     int pr = int.parse(price);
-    if (totatlPrice != 0) {
-      totatlPrice = totatlPrice - pr;
+    if (currentTotalPrice != 0) {
+      currentTotalPrice = currentTotalPrice - pr;
+      Provider.of<Database>(context, listen: false)
+          .updateCartPric(docId, currentTotalPrice, quantity);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   int selectedRadio = 1;

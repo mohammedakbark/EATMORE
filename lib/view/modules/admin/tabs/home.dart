@@ -1,11 +1,10 @@
+import 'package:eatmore/utils/const.dart';
 import 'package:eatmore/view%20model/database.dart';
-import 'package:eatmore/view/modules/admin/homepagefoodlist.dart';
 import 'package:eatmore/view/modules/admin/profile.dart';
 import 'package:eatmore/view/modules/admin/tabs/myfoodlist.dart';
 import 'package:eatmore/view/widgets/rating_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
@@ -38,191 +37,230 @@ class Home extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(children: [
             const SizedBox(height: 15),
-            GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  backgroundColor: Colors.white,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadiusDirectional.only(
-                      topEnd: Radius.circular(25),
-                      topStart: Radius.circular(25),
-                    ),
-                  ),
-                  builder: (context) => SizedBox(
-                    height: MediaQuery.of(context).size.height *
-                        0.8, // Set your desired height here
-                    width: MediaQuery.of(context).size.width,
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsetsDirectional.only(
-                        start: 20,
-                        end: 20,
-                        bottom: 30,
-                        top: 8,
-                      ),
-                      // Add your content here
-
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 3,
-                            color: HexColor("C1C8D2"),
-                          ),
-                          const SizedBox(height: 19),
-                          // Add your content here
-                          const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "20 Today Orders",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+            Consumer<Database>(builder: (context, database, child) {
+              return FutureBuilder(
+                  future: database.fetchpendingOrder(false),
+                  builder: (context, snapshot) {
+                    return GestureDetector(
+                      onTap: () {
+                        final data = database.pendingOrdersList;
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          backgroundColor: Colors.white,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadiusDirectional.only(
+                              topEnd: Radius.circular(25),
+                              topStart: Radius.circular(25),
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          SizedBox(
-                            height: 655,
-                            child: ListView.builder(
-                              itemCount: TodayOrder.length,
-                              itemBuilder: (context, index) {
-                                return Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 11.0),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          height: 95,
-                                          width: 100,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: TodayOrder[index]['image'],
+                          builder: (context) => SizedBox(
+                            height: MediaQuery.of(context).size.height *
+                                0.8, // Set your desired height here
+                            width: MediaQuery.of(context).size.width,
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsetsDirectional.only(
+                                start: 20,
+                                end: 20,
+                                bottom: 30,
+                                top: 8,
+                              ),
+                              // Add your content here
+
+                              child: Consumer<Database>(
+                                  builder: (context, instence, child) {
+                                return FutureBuilder(
+                                    future: instence.fetchpendingOrder(false),
+                                    builder: (context, snapshot) {
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            width: 40,
+                                            height: 3,
+                                            color: HexColor("C1C8D2"),
+                                          ),
+                                          const SizedBox(height: 19),
+                                          // Add your content here
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "${instence.pendingOrder} Pending Orders",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(TodayOrder[index]['title'],
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              const SizedBox(height: 5),
-                                              Text(TodayOrder[index]['sub1'],
-                                                  style: TextStyle(
-                                                      color:
-                                                          HexColor("9C9BA6"))),
-                                              const SizedBox(height: 5),
-                                              Row(
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                          TodayOrder[index]
-                                                              ['sub2'],
-                                                          style: TextStyle(
-                                                              color: HexColor(
-                                                                  "9C9BA6"))),
-                                                      const SizedBox(height: 5),
-                                                      Text(
-                                                          TodayOrder[index]
-                                                              ['rate'],
-                                                          style: const TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                      const SizedBox(height: 5),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(width: 5),
-                                                  Container(
-                                                    alignment: Alignment.center,
-                                                    height: 44,
-                                                    width: 65,
-                                                    decoration: BoxDecoration(
-                                                      color: HexColor("54E70F"),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              6),
-                                                    ),
-                                                    child: const Text("Done",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white)),
-                                                  ),
-                                                  const SizedBox(width: 5),
-                                                  Container(
-                                                    alignment: Alignment.center,
-                                                    height: 44,
-                                                    width: 66,
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: HexColor(
-                                                              "FF3326")),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              6),
-                                                    ),
-                                                    child: Text("Cancel",
-                                                        style: TextStyle(
-                                                            color: HexColor(
-                                                                "FF3326"))),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                          const SizedBox(height: 5),
+                                          SizedBox(
+                                            height: 655,
+                                            child: instence
+                                                    .pendingOrdersList.isEmpty
+                                                ? const Center(
+                                                    child: Text(
+                                                        "No Pending Orders"),
+                                                  )
+                                                : snapshot.connectionState ==
+                                                        ConnectionState.waiting
+                                                    ? indicator
+                                                    : ListView.builder(
+                                                        itemCount: instence
+                                                            .pendingOrdersList
+                                                            .length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      top:
+                                                                          11.0),
+                                                              child: Row(
+                                                                children: [
+                                                                  Container(
+                                                                    height: 95,
+                                                                    width: 100,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              10),
+                                                                      image: DecorationImage(
+                                                                          fit: BoxFit
+                                                                              .cover,
+                                                                          image: NetworkImage(instence
+                                                                              .pendingOrdersList[index]
+                                                                              .cartItemModel
+                                                                              .itemImage)),
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                        .only(
+                                                                        left:
+                                                                            5.0),
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                            instence.pendingOrdersList[index].cartItemModel.itemName,
+                                                                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                5),
+                                                                        Text(
+                                                                            "Token No. ${instence.pendingOrdersList[index].tokenNo}",
+                                                                            style:
+                                                                                TextStyle(color: HexColor("9C9BA6"))),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                5),
+                                                                        Row(
+                                                                          children: [
+                                                                            Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Text("Quantity ${instence.pendingOrdersList[index].cartItemModel.quantity}", style: TextStyle(color: HexColor("9C9BA6"))),
+                                                                                const SizedBox(height: 5),
+                                                                                Text("₹ ${instence.pendingOrdersList[index].cartItemModel.itemPrice}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                                                                const SizedBox(height: 5),
+                                                                              ],
+                                                                            ),
+                                                                            const SizedBox(width: 5),
+                                                                            InkWell(
+                                                                              onTap: () {
+                                                                                if (instence.pendingOrdersList[index].status == "PENDING") {
+                                                                                  instence.updatebroughtProductStatus(data[index].id, "DONE");
+                                                                                  instence.fetchpendingOrder(true);
+                                                                                }
+                                                                              },
+                                                                              child: Container(
+                                                                                alignment: Alignment.center,
+                                                                                height: 44,
+                                                                                width: 65,
+                                                                                decoration: BoxDecoration(
+                                                                                  color: HexColor("54E70F"),
+                                                                                  borderRadius: BorderRadius.circular(6),
+                                                                                ),
+                                                                                child: const Text("Done", style: TextStyle(color: Colors.white)),
+                                                                              ),
+                                                                            ),
+                                                                            const SizedBox(width: 5),
+                                                                            InkWell(
+                                                                              onTap: () {
+                                                                                if (instence.pendingOrdersList[index].status == "PENDING") {
+                                                                                  instence.updatebroughtProductStatus(data[index].id, "CANCELED");
+                                                                                  instence.fetchpendingOrder(true);
+                                                                                }
+                                                                              },
+                                                                              child: Container(
+                                                                                alignment: Alignment.center,
+                                                                                height: 44,
+                                                                                width: 66,
+                                                                                decoration: BoxDecoration(
+                                                                                  border: Border.all(color: HexColor("FF3326")),
+                                                                                  borderRadius: BorderRadius.circular(6),
+                                                                                ),
+                                                                                child: Text("Cancel", style: TextStyle(color: HexColor("FF3326"))),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
+                                        ],
+                                      );
+                                    });
+                              }),
                             ),
                           ),
-                        ],
+                        );
+                      },
+                      child: Container(
+                        height: 105,
+                        width: 310,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: HexColor("E1FED3"),
+                        ),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 10),
+                            snapshot.connectionState == ConnectionState.waiting
+                                ? indicator
+                                : Text(
+                                    database.pendingOrder == null
+                                        ? "0"
+                                        : database.pendingOrder.toString(),
+                                    style: TextStyle(
+                                      color: HexColor("32343E"),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 40,
+                                    ),
+                                  ),
+                            Text(
+                              "PENDING ORDERS",
+                              style: TextStyle(color: HexColor("838799")),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
-              child: Container(
-                height: 105,
-                width: 310,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: HexColor("E1FED3"),
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    Text(
-                      "20",
-                      style: TextStyle(
-                        color: HexColor("32343E"),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 40,
-                      ),
-                    ),
-                    Text(
-                      "TODAY ORDERS",
-                      style: TextStyle(color: HexColor("838799")),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                    );
+                  });
+            }),
             const SizedBox(height: 9),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

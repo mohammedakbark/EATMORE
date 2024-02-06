@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatmore/model/add_new_item.dart';
+import 'package:eatmore/model/buy_product_model.dart';
 import 'package:eatmore/model/cart_item_model.dart';
+import 'package:eatmore/model/pre_book_model.dart';
 import 'package:eatmore/model/user_model.dart';
 import 'package:eatmore/utils/instence.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,6 +23,13 @@ class Database with ChangeNotifier {
     });
   }
 
+  buyaProductbyUser(BuyProductModel buyProductModel, docId) async {
+    final docs = db.collection("My orders").doc();
+    await docs
+        .set(buyProductModel.tojsom(docs.id))
+        .then((value) => removeFromCart(docId));
+  }
+
   addToCart(CartItemModel cartItemModel) async {
     final docId = db
         .collection("User")
@@ -28,6 +37,11 @@ class Database with ChangeNotifier {
         .collection("Cart")
         .doc();
     await docId.set(cartItemModel.toJson(docId.id));
+  }
+
+  prebook(PreBookModel preBookModel) {
+    final doc = db.collection("Pre-book").doc();
+    doc.set(preBookModel.tojsom(doc.id));
   }
 
   //--------------------------------delete
@@ -64,6 +78,23 @@ class Database with ChangeNotifier {
         .collection("Items")
         .doc(selectedId)
         .update({"moreDetail": newdetail, "itemPrice": newprice});
+    notifyListeners();
+  }
+
+  updateCartPric(docID, price, quantity) async {
+    await db
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("Cart")
+        .doc(docID)
+        .update({
+      "totalPrice": price,
+      "quantity": quantity,
+    });
+  }
+
+  updatebroughtProductStatus(id, newStatus) {
+    db.collection("My orders").doc(id).update({"status": newStatus});
     notifyListeners();
   }
 
@@ -113,5 +144,63 @@ class Database with ChangeNotifier {
       print(e);
       return CartItemModel.fromJson(e.data());
     }).toList();
+  }
+
+  List<AddNewItemModel> selectedCategoryItem = [];
+  Future<List<AddNewItemModel>> fetchselectedCategoryItem(
+      String selectedCategory) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await db
+        .collection("Items")
+        .where("itemCategory", isEqualTo: selectedCategory)
+        .get();
+    selectedCategoryItem = snapshot.docs.map((e) {
+      print(e);
+      return AddNewItemModel.fromJson(e.data());
+    }).toList();
+    notifyListeners();
+
+    return selectedCategoryItem;
+  }
+
+  List<BuyProductModel> currentUserOrderList = [];
+  fetchCurrentUserOrder() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await db
+        .collection("My orders")
+        .where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("status", isEqualTo: "PENDING")
+        .get();
+    currentUserOrderList = snapshot.docs.map((e) {
+      return BuyProductModel.fromJson(e.data());
+    }).toList();
+  }
+
+  List<BuyProductModel> allUsersOrderList = [];
+  fetchUserOrders() async {
+    print("hjsd");
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await db.collection("My orders").get();
+    try {
+      allUsersOrderList = snapshot.docs.map((e) {
+        return BuyProductModel.fromJson(e.data());
+      }).toList();
+    } catch (e) {
+      print("${e}");
+    }
+  }
+
+  int? pendingOrder;
+  List<BuyProductModel> pendingOrdersList = [];
+  fetchpendingOrder(bool listen) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await db
+        .collection("My orders")
+        .where("status", isEqualTo: "PENDING")
+        .get();
+    pendingOrder = snapshot.docs.length;
+    pendingOrdersList = snapshot.docs.map((e) {
+      return BuyProductModel.fromJson(e.data());
+    }).toList();
+    if (listen) {
+      notifyListeners();
+    }
   }
 }

@@ -133,8 +133,11 @@ class _MenuDetailsState extends State<MenuDetails> {
                   child: Center(
                       child: InkWell(
                     onTap: () {
+                      int ppp = int.parse(widget.price);
                       database
                           .addToCart(CartItemModel(
+                              totalPrice: ppp,
+                              quantity: 1,
                               itemId: widget.itemId,
                               itemImage: widget.img,
                               itemName: widget.name,
@@ -149,7 +152,6 @@ class _MenuDetailsState extends State<MenuDetails> {
                                     Text("Adding to  Cart is Successful...!")));
                         Navigator.of(context).pop();
                       });
-                     
                     },
                     child: Container(
                       alignment: Alignment.center,
