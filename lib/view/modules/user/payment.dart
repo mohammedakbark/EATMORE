@@ -27,6 +27,7 @@ class _PaymentState extends State<Payment> {
   String time = DateFormat('h:mm a').format(DateTime.now());
 
   String date = DateFormat("dd MMMM yyyy").format(DateTime.now());
+  String day = DateFormat("d").format(DateTime.now());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,6 +178,7 @@ class _PaymentState extends State<Payment> {
                                           backgroundColor: HexColor("54E70F")),
                                       onPressed: () {
                                         String times = "${time} ${date}";
+                                        double dd = double.parse(day);
                                         for (final model
                                             in widget.cartItemModelList) {
                                           final now = DateTime.now();
@@ -188,6 +190,7 @@ class _PaymentState extends State<Payment> {
                                                   listen: false)
                                               .buyaProductbyUser(
                                                   BuyProductModel(
+                                                      day: dd,
                                                       orderdateAndTime: times,
                                                       paymentMode: "Cash",
                                                       uid: FirebaseAuth.instance

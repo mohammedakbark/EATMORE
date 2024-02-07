@@ -7,6 +7,7 @@ import 'package:eatmore/model/user_model.dart';
 import 'package:eatmore/utils/instence.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Database with ChangeNotifier {
   final db = FirebaseFirestore.instance;
@@ -106,7 +107,7 @@ class Database with ChangeNotifier {
     if (docSnap.exists) {
       usermodel = UserModel.fromJson(docSnap.data()!);
       await fetchAddedItems(false);
-      await fetchPopularItems();
+      // await _fetchPopularItems();
     }
   }
 
@@ -189,16 +190,39 @@ class Database with ChangeNotifier {
   }
 
   int? pendingOrder;
+  int totalRevenue = 0;
+  List<Map<String, dynamic>> incomeLine = [];
   List<BuyProductModel> pendingOrdersList = [];
   fetchpendingOrder(bool listen) async {
+    // totalRevenue = 0;
     QuerySnapshot<Map<String, dynamic>> snapshot = await db
         .collection("My orders")
         .where("status", isEqualTo: "PENDING")
         .get();
     pendingOrder = snapshot.docs.length;
+    print("kbjn");
     pendingOrdersList = snapshot.docs.map((e) {
       return BuyProductModel.fromJson(e.data());
     }).toList();
+    // print("object");
+
+    // print("bkjk,d.mz");
+    // totalRevenue = 0;
+    // // incomeLine = [];
+    // // int index = 0;
+    // for (var data1 in pendingOrdersList) {
+    //   print("in");
+    //   totalRevenue += data1.cartItemModel.totalPrice;
+
+    //   incomeLine.add({
+    //     "date": data1.day,
+    //     "income": data1.cartItemModel.totalPrice.toDouble()
+    //   });
+    // index++;
+    // }
+
+    // print(totalRevenue);
+    // print(incomeLine);
     if (listen) {
       notifyListeners();
     }

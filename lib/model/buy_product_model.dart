@@ -9,12 +9,14 @@ class BuyProductModel {
   CartItemModel cartItemModel;
   String orderdateAndTime;
   String status;
+  double day;
   String tokenNo;
   String paymentMode;
   UserModel userModel;
 
   BuyProductModel(
       {required this.cartItemModel,
+      required this.day,
       required this.paymentMode,
       required this.uid,
       required this.orderdateAndTime,
@@ -25,6 +27,7 @@ class BuyProductModel {
   Map<String, dynamic> tojsom(ids) => {
         "id": ids,
         "uid": uid,
+        "day": day,
         "paymentMode": paymentMode,
         "cartItemModel": cartItemModel.toJson(cartItemModel.cartId),
         "status": status,
@@ -35,6 +38,7 @@ class BuyProductModel {
   factory BuyProductModel.fromJson(Map<String, dynamic> json) {
     return BuyProductModel(
         uid: json["uid"],
+        day: json["day"],
         orderdateAndTime: json["orderdateAndTime"],
         paymentMode: json["paymentMode"],
         cartItemModel: CartItemModel.fromJson(json["cartItemModel"]),

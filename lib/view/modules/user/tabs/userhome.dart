@@ -269,9 +269,8 @@ class UserHome extends StatelessWidget {
                                               ),
                                             ],
                                           ),
-                                          
-
-                                          ratingBar(data[index].rating)
+                                          ratingBar(
+                                              data[index].rating.toDouble())
                                         ],
                                       ),
                                     ],

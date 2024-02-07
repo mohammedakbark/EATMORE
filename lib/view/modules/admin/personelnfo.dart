@@ -16,7 +16,7 @@ class PersonelInfo extends StatelessWidget {
         leading: IconButton(
             onPressed: () {}, icon: const Icon(Icons.arrow_back_ios_new_rounded)),
       ),
-      body: Container(
+      body: SizedBox(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: Column(

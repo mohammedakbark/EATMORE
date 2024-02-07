@@ -176,7 +176,7 @@ class Home extends StatelessWidget {
                                                                               onTap: () {
                                                                                 if (instence.pendingOrdersList[index].status == "PENDING") {
                                                                                   instence.updatebroughtProductStatus(data[index].id, "DONE");
-                                                                                  instence.fetchpendingOrder(true);
+                                                                                  // instence.fetchpendingOrder(true);
                                                                                 }
                                                                               },
                                                                               child: Container(
@@ -195,7 +195,7 @@ class Home extends StatelessWidget {
                                                                               onTap: () {
                                                                                 if (instence.pendingOrdersList[index].status == "PENDING") {
                                                                                   instence.updatebroughtProductStatus(data[index].id, "CANCELED");
-                                                                                  instence.fetchpendingOrder(true);
+                                                                                  // instence.fetchpendingOrder(true);
                                                                                 }
                                                                               },
                                                                               child: Container(
@@ -269,10 +269,13 @@ class Home extends StatelessWidget {
                   children: [
                     Text("Total Revenue",
                         style: TextStyle(color: HexColor("32343E"))),
-                    Text("₹2,241",
-                        style: TextStyle(
-                            color: HexColor("000000"),
-                            fontWeight: FontWeight.bold)),
+                    Consumer<Database>(builder: (context, instence, child) {
+                      return Text(
+                          "₹${instence.totalRevenue.toStringAsFixed(2)}",
+                          style: TextStyle(
+                              color: HexColor("000000"),
+                              fontWeight: FontWeight.bold));
+                    }),
                   ],
                 ),
                 Container(
@@ -364,116 +367,111 @@ class Home extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
                 height: 165,
-                child: LineChart(
-                  LineChartData(
-                    gridData: FlGridData(
-                      show:
-                          false, // Set to false to hide both horizontal and vertical lines
-                      drawHorizontalLine: true,
-                      drawVerticalLine: true,
-                    ),
-                    titlesData: FlTitlesData(
-                      show: true,
-                      bottomTitles: SideTitles(
-                        showTitles: true,
-                        getTitles: (value) {
-                          switch (value.toInt()) {
-                            case 0:
-                              return '10AM';
-                            case 1:
-                              return '11AM';
-                            case 2:
-                              return '12PM';
-                            case 3:
-                              return '01PM';
-                            case 4:
-                              return '02PM';
-                            case 5:
-                              return '03PM';
-                            case 6:
-                              return '04PM';
-                            default:
-                              return '';
-                          }
-                        },
+                child: Consumer<Database>(builder: (context, instence, child) {
+                  return LineChart(
+                    LineChartData(
+                      gridData: FlGridData(
+                        show:
+                            false, // Set to false to hide both horizontal and vertical lines
+                        drawHorizontalLine: true,
+                        drawVerticalLine: true,
                       ),
-                      leftTitles: SideTitles(
-                        showTitles: false,
-                        checkToShowTitle: (minValue, maxValue, sideTitles,
-                            appliedInterval, value) {
-                          // Add your condition to determine whether to show the title
-                          // For example, show title if the value is greater than a threshold
-                          return value > 0;
-                        },
+                      titlesData: FlTitlesData(
+                        show: true,
+                        bottomTitles: SideTitles(
+                            // showTitles: true,
+                            //   getTitles: (value) {
+                            //     switch (value.toInt()) {
+                            //       case 0:
+                            //         return '10AM';
+                            //       case 1:
+                            //         return '11AM';
+                            //       case 2:
+                            //         return '12PM';
+                            //       case 3:
+                            //         return '01PM';
+                            //       case 4:
+                            //         return '02PM';
+                            //       case 5:
+                            //         return '03PM';
+                            //       case 6:
+                            //         return '04PM';
+                            //       default:
+                            //         return '';
+                            //     }
+                            //   },
+                            ),
+                        leftTitles: SideTitles(
+                          showTitles: false,
+                          checkToShowTitle: (minValue, maxValue, sideTitles,
+                              appliedInterval, value) {
+                            // Add your condition to determine whether to show the title
+                            // For example, show title if the value is greater than a threshold
+                            return value > 0;
+                          },
+                        ),
+                        rightTitles: SideTitles(
+                          showTitles: false,
+                          checkToShowTitle: (minValue, maxValue, sideTitles,
+                              appliedInterval, value) {
+                            // Add your condition to determine whether to show the title
+                            // For example, show title if the value is greater than a threshold
+                            return value > 0;
+                          },
+                        ),
+                        topTitles: SideTitles(showTitles: false),
                       ),
-                      rightTitles: SideTitles(
-                        showTitles: false,
-                        checkToShowTitle: (minValue, maxValue, sideTitles,
-                            appliedInterval, value) {
-                          // Add your condition to determine whether to show the title
-                          // For example, show title if the value is greater than a threshold
-                          return value > 0;
-                        },
-                      ),
-                      topTitles: SideTitles(showTitles: false),
-                    ),
-                    borderData: FlBorderData(
-                      show:
-                          false, // Set to false to hide both bottom and top lines
-                      border: const Border(
-                        bottom: BorderSide(
-                          color: Colors.grey, // Adjust the color as needed
+                      borderData: FlBorderData(
+                        show:
+                            false, // Set to false to hide both bottom and top lines
+                        border: const Border(
+                          bottom: BorderSide(
+                            color: Colors.grey, // Adjust the color as needed
+                          ),
                         ),
                       ),
-                    ),
-                    extraLinesData: ExtraLinesData(
-                      horizontalLines: [
-                        HorizontalLine(
-                          y: 0,
-                          color:
-                              Colors.transparent, // Adjust the color as needed
-                        ),
-                      ],
-                      verticalLines: [
-                        VerticalLine(
-                          x: 6,
-                          color:
-                              Colors.transparent, // Adjust the color as needed
-                        ),
-                      ],
-                    ),
-                    minX: 0,
-                    maxX: 6,
-                    minY: 0,
-                    maxY: 700,
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: [
-                          const FlSpot(0, 100),
-                          const FlSpot(1, 400),
-                          const FlSpot(2, 150),
-                          const FlSpot(3, 450),
-                          const FlSpot(4, 200),
-                          const FlSpot(5, 399),
-                          const FlSpot(6, 50),
-                          const FlSpot(7, 650),
+                      extraLinesData: ExtraLinesData(
+                        horizontalLines: [
+                          HorizontalLine(
+                            y: 0,
+                            color: Colors
+                                .transparent, // Adjust the color as needed
+                          ),
                         ],
-                        isCurved: true,
-                        colors: [HexColor("54E70F")],
-                        barWidth: 4, // Adjust the width as needed
-                        isStrokeCapRound: true,
-                        dotData: FlDotData(show: false),
-                        belowBarData: BarAreaData(
-                          show: true,
-                          colors: [
-                            HexColor("54E70F").withOpacity(0.3),
-                            HexColor("#FFFFFF")
-                          ], // Set the shadow color here
-                        ),
+                        verticalLines: [
+                          VerticalLine(
+                            x: 6,
+                            color: Colors
+                                .transparent, // Adjust the color as needed
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                      minX: 0,
+                      maxX: 6,
+                      minY: 0,
+                      maxY: 700,
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: instence.incomeLine.map((e) {
+                            return FlSpot(e["date"], e["income"]);
+                          }).toList(),
+                          isCurved: true,
+                          colors: [HexColor("54E70F")],
+                          barWidth: 4, // Adjust the width as needed
+                          isStrokeCapRound: true,
+                          dotData: FlDotData(show: false),
+                          belowBarData: BarAreaData(
+                            show: true,
+                            colors: [
+                              HexColor("54E70F").withOpacity(0.3),
+                              HexColor("#FFFFFF")
+                            ], // Set the shadow color here
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
               ),
             ),
 
