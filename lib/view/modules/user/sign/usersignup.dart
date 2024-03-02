@@ -1,11 +1,10 @@
-
 import 'package:eatmore/model/user_model.dart';
 import 'package:eatmore/utils/instence.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class UserSignUp extends StatefulWidget {
- const UserSignUp({Key? key}) : super(key: key);
+  const UserSignUp({Key? key}) : super(key: key);
 
   @override
   State<UserSignUp> createState() => _UserSignUpState();
@@ -210,10 +209,16 @@ class _UserSignUpState extends State<UserSignUp> {
                 InkWell(
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
-
-                      await auth.sign(emailController.text,
-                          passwordController.text, context,UserModel(bio: "add your bio", email: emailController.text, name: userNameController.text, number: 91,));
-                     
+                      await auth.sign(
+                          emailController.text,
+                          passwordController.text,
+                          context,
+                          UserModel(
+                            bio: "add your bio",
+                            email: emailController.text,
+                            name: userNameController.text,
+                            number: 91,
+                          ));
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
