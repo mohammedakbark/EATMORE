@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:eatmore/firebase_options.dart';
 import 'package:eatmore/view%20model/authentication.dart';
 import 'package:eatmore/view%20model/controller.dart';
@@ -8,6 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+ 
+
+
+
+
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

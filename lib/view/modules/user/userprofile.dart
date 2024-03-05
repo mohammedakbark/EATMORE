@@ -108,6 +108,9 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 5,
+              ),
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -160,6 +163,9 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 5,
+              ),
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -185,6 +191,9 @@ class _UserProfileState extends State<UserProfile> {
                     trailing: const Icon(Icons.arrow_right),
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: 5,
               ),
               InkWell(
                 onTap: () {
@@ -215,23 +224,24 @@ class _UserProfileState extends State<UserProfile> {
               const SizedBox(
                 height: 10,
               ),
-              Container(
-                height: 65,
-                width: 295,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: HexColor("E1FED3")),
-                child: ListTile(
-                  leading: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.question_mark,
-                        color: HexColor('FB6D3A'),
-                      )),
-                  title: const Text("FAQs"),
-                  trailing: const Icon(Icons.arrow_right),
-                ),
-              ),
+              // Container(
+              //   height: 65,
+              //   width: 295,
+              //   decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(10),
+              //       color: HexColor("E1FED3")),
+              //   child: ListTile(
+              //     leading: CircleAvatar(
+              //         backgroundColor: Colors.white,
+              //         child: Icon(
+              //           Icons.question_mark,
+              //           color: HexColor('FB6D3A'),
+              //         )),
+              //     title: const Text("FAQs"),
+              //     trailing: const Icon(Icons.arrow_right),
+              //   ),
+              // ),
+
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -258,32 +268,32 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NotiFication(),
-                      ));
-                },
-                child: Container(
-                  height: 65,
-                  width: 295,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: HexColor("E1FED3")),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.notifications_none,
-                          color: HexColor('FFAA2A'),
-                        )),
-                    title: const Text("Notifications"),
-                    trailing: const Icon(Icons.arrow_right),
-                  ),
-                ),
-              ),
+              // InkWell(
+              //   onTap: () {
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //           builder: (context) => const NotiFication(),
+              //         ));
+              //   },
+              //   child: Container(
+              //     height: 65,
+              //     width: 295,
+              //     decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(10),
+              //         color: HexColor("E1FED3")),
+              //     child: ListTile(
+              //       leading: CircleAvatar(
+              //           backgroundColor: Colors.white,
+              //           child: Icon(
+              //             Icons.notifications_none,
+              //             color: HexColor('FFAA2A'),
+              //           )),
+              //       title: const Text("Notifications"),
+              //       trailing: const Icon(Icons.arrow_right),
+              //     ),
+              //   ),
+              // ),
               const SizedBox(
                 height: 10,
               ),

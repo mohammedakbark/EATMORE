@@ -143,7 +143,7 @@ class UserHome extends StatelessWidget {
                           width: width,
                           child: data.isEmpty
                               ? const Center(
-                                  child: Text("Under maintainence..!"),
+                                  child: Text("Loading..."),
                                 )
                               : ListView.separated(
                                   separatorBuilder: (context, index) {
@@ -213,7 +213,7 @@ class UserHome extends StatelessWidget {
                       height: height * .22,
                       child: instence.popularItemsList.isEmpty
                           ? const Center(
-                              child: Text("Under maintainence..!"),
+                              child: Text("Loading..!"),
                             )
                           : ListView.separated(
                               separatorBuilder: (context, index) {
@@ -225,55 +225,78 @@ class UserHome extends StatelessWidget {
                               scrollDirection: Axis.horizontal,
                               itemCount: instence.popularItemsList.length,
                               itemBuilder: (context, index) {
-                                return SizedBox(
-                                  // height: height * .14,
-                                  // width: width * .45,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: height *
-                                            .15, // Set a specific height for the image container
-                                        width: width * .53,
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(instence
-                                                  .popularItemsList[index]
-                                                  .itemImage),
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Row(
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MenuDetails(
+                                              itemId: data[index].itemId!,
+                                              name: data[index].itemName,
+                                              rating: data[index].rating,
+                                              details: data[index].moreDetail,
+                                              img: data[index].itemImage,
+                                              price: data[index].itemPrice),
+                                        ));
+                                  },
+                                  child: SizedBox(
+                                    // height: height * .14,
+                                    // width: width * .45,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: height *
+                                              .15, // Set a specific height for the image container
+                                          width: width * .53,
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: NetworkImage(instence
+                                                    .popularItemsList[index]
+                                                    .itemImage),
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                instence.popularItemsList[index]
-                                                    .itemName,
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                              SizedBox(
+                                                width: width * .5,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      instence
+                                                          .popularItemsList[
+                                                              index]
+                                                          .itemName
+                                                          .toUpperCase(),
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                      " ₹ ${double.parse(instence.popularItemsList[index].itemPrice)}",
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 15),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                              const SizedBox(
-                                                width: 20,
-                                              ),
-                                              Text(
-                                                instence.popularItemsList[index]
-                                                    .itemPrice,
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 15),
-                                              ),
+                                              ratingBar(
+                                                  data[index].rating.toDouble())
                                             ],
                                           ),
-                                          ratingBar(
-                                              data[index].rating.toDouble())
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 );
                               },

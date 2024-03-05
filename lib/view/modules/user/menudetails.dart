@@ -1,10 +1,13 @@
 import 'package:eatmore/model/cart_item_model.dart';
+import 'package:eatmore/model/fav_model.dart';
 import 'package:eatmore/utils/const.dart';
 import 'package:eatmore/utils/instence.dart';
+import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/user/cart.dart';
 import 'package:eatmore/view/widgets/rating_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
 class MenuDetails extends StatefulWidget {
   String img;
@@ -28,10 +31,11 @@ class MenuDetails extends StatefulWidget {
 }
 
 class _MenuDetailsState extends State<MenuDetails> {
-  bool isFavorite = false; // Initial favorite state
+// Initial favorite state
 
   @override
   Widget build(BuildContext context) {
+    // Provider.of<Database>(context).checkTheItemIsFav(widget.itemId);
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -64,23 +68,42 @@ class _MenuDetailsState extends State<MenuDetails> {
                         fit: BoxFit.cover, image: NetworkImage(widget.img))),
               ),
             ),
-            SizedBox(
-              width: 330,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: Colors.red, // Customize the color as needed
+            Consumer<Database>(builder: (context, databasee, child) {
+              databasee.checkTheItemIsFav(widget.itemId);
+              return SizedBox(
+                width: 330,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: Icon(
+                      databasee.isFavorate == true
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color: Colors.red, // Customize the color as needed
+                    ),
+                    onPressed: () {
+                      if (databasee.isFavorate == true) {
+                        databasee.deletefromFav(widget.itemId);
+                      } else {
+                        databasee.addtoFavorate(
+                            widget.itemId,
+                            FavModel(
+                                proID: widget.itemId,
+                                details: widget.details,
+                                img: widget.img,
+                                name: widget.name,
+                                price: widget.price,
+                                rating: widget.rating));
+                      }
+
+                      // setState(() {
+                      //   isFavorite = !isFavorite; // Toggle the favorite state
+                      // });
+                    },
                   ),
-                  onPressed: () {
-                    setState(() {
-                      isFavorite = !isFavorite; // Toggle the favorite state
-                    });
-                  },
                 ),
-              ),
-            ),
+              );
+            }),
             const Expanded(
               child: SizedBox(
                 height: 2,

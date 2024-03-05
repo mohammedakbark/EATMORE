@@ -41,7 +41,7 @@ class MyfoodList extends StatelessWidget {
                     child: Text("No Items Found"),
                   )
                 : ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
+                    // physics: const NeverScrollableScrollPhysics(),
                     itemCount: databasepro.itemList.length,
                     itemBuilder: (context, index) {
                       return Padding(

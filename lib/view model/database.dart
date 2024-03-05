@@ -2,16 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatmore/model/add_new_item.dart';
 import 'package:eatmore/model/buy_product_model.dart';
 import 'package:eatmore/model/cart_item_model.dart';
+import 'package:eatmore/model/fav_model.dart';
 import 'package:eatmore/model/pre_book_model.dart';
 import 'package:eatmore/model/user_model.dart';
 import 'package:eatmore/utils/instence.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-
-
-
 
 class Database with ChangeNotifier {
   final db = FirebaseFirestore.instance;
@@ -28,11 +25,17 @@ class Database with ChangeNotifier {
     });
   }
 
-  buyaProductbyUser(BuyProductModel buyProductModel, docId) async {
+  buyaProductbyUser(
+    BuyProductModel buyProductModel,
+  ) async {
     final docs = db.collection("My orders").doc();
-    await docs
-        .set(buyProductModel.tojsom(docs.id))
-        .then((value) => removeFromCart(docId));
+    await docs.set(buyProductModel.tojsom(docs.id)).then((value) {
+      CollectionReference collection = db
+          .collection("User")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection("Cart");
+      _deleteCollection(collection);
+    });
   }
 
   addToCart(CartItemModel cartItemModel) async {
@@ -44,9 +47,38 @@ class Database with ChangeNotifier {
     await docId.set(cartItemModel.toJson(docId.id));
   }
 
-  prebook(PreBookModel preBookModel) {
+  Future prebook(PreBookModel preBookModel) async {
     final doc = db.collection("Pre-book").doc();
-    doc.set(preBookModel.tojsom(doc.id));
+    await doc.set(preBookModel.tojsom(doc.id));
+  }
+
+  addtoFavorate(proId, FavModel favModel) {
+    final docId = db
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("Favorate")
+        .doc(proId);
+
+    docId.set(favModel.toJson());
+    notifyListeners();
+  }
+
+  bool? isFavorate = false;
+  checkTheItemIsFav(id) async {
+    DocumentSnapshot<Map<String, dynamic>> docs = await db
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("Favorate")
+        .doc(id)
+        .get();
+    if (docs.exists) {
+      print("exist");
+      isFavorate = true;
+    } else {
+      print("not exist");
+      isFavorate = false;
+    }
+    notifyListeners();
   }
 
   //--------------------------------delete
@@ -63,6 +95,28 @@ class Database with ChangeNotifier {
         .doc(docId)
         .delete();
     notifyListeners();
+  }
+
+  deletefromFav(id) {
+    db
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("Favorate")
+        .doc(id)
+        .delete();
+    notifyListeners();
+  }
+
+  Future<void> _deleteCollection(
+      CollectionReference collectionReference) async {
+    final QuerySnapshot snapshot = await collectionReference.get();
+
+    for (QueryDocumentSnapshot doc in snapshot.docs) {
+      if (doc.exists) {
+        await doc.reference.delete();
+        notifyListeners();
+      }
+    }
   }
 
   //--------------------------------update
@@ -103,6 +157,11 @@ class Database with ChangeNotifier {
     notifyListeners();
   }
 
+  updatepreOrderStatus(id, newStatus) {
+    db.collection("Pre-book").doc(id).update({"status": newStatus});
+    notifyListeners();
+  }
+
   //--------------------------------read
   UserModel? usermodel;
   fethcurrentUser(currentID) async {
@@ -111,7 +170,7 @@ class Database with ChangeNotifier {
     if (docSnap.exists) {
       usermodel = UserModel.fromJson(docSnap.data()!);
       await fetchAddedItems(false);
-      // await _fetchPopularItems();
+      await fetchPopularItems();
     }
   }
 
@@ -153,7 +212,7 @@ class Database with ChangeNotifier {
 
   List<AddNewItemModel> selectedCategoryItem = [];
   Future<List<AddNewItemModel>> fetchselectedCategoryItem(
-      String selectedCategory) async {
+      String selectedCategory, bool lis) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await db
         .collection("Items")
         .where("itemCategory", isEqualTo: selectedCategory)
@@ -162,7 +221,21 @@ class Database with ChangeNotifier {
       print(e);
       return AddNewItemModel.fromJson(e.data());
     }).toList();
-    notifyListeners();
+
+    if (lis) {
+      notifyListeners();
+    }
+
+    return selectedCategoryItem;
+  }
+
+  Future<List<AddNewItemModel>> fetchAllCatergoryItem() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await db.collection("Items").get();
+    selectedCategoryItem = snapshot.docs.map((e) {
+      print(e);
+      return AddNewItemModel.fromJson(e.data());
+    }).toList();
 
     return selectedCategoryItem;
   }
@@ -177,6 +250,30 @@ class Database with ChangeNotifier {
     currentUserOrderList = snapshot.docs.map((e) {
       return BuyProductModel.fromJson(e.data());
     }).toList();
+  }
+
+  List<PreBookModel> currentUserPreOrderList = [];
+  fetchCurrentUserPreorder() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await db
+        .collection("Pre-book")
+        .where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("status", isEqualTo: "PENDING")
+        .get();
+    currentUserPreOrderList = snapshot.docs.map((e) {
+      return PreBookModel.fromJson(e.data());
+    }).toList();
+
+    print("length :${currentUserPreOrderList.length}");
+  }
+
+  AddNewItemModel? product;
+  Future fetchSelectedProductImage(proId) async {
+    DocumentSnapshot<Map<String, dynamic>> snapshot =
+        await db.collection("Items").doc(proId).get();
+    if (snapshot.exists) {
+      product = AddNewItemModel.fromJson(snapshot.data()!);
+    }
+    return product;
   }
 
   List<BuyProductModel> allUsersOrderList = [];
@@ -197,17 +294,30 @@ class Database with ChangeNotifier {
   int totalRevenue = 0;
   List<Map<String, dynamic>> incomeLine = [];
   List<BuyProductModel> pendingOrdersList = [];
+  List<PreBookModel> prependingOrderList = [];
+  fetchPEndingPreOrder() async {
+    QuerySnapshot<Map<String, dynamic>> snaps = await db
+        .collection("Pre-book")
+        .where("status", isEqualTo: "PENDING")
+        .get();
+    prependingOrderList = snaps.docs.map((e) {
+      return PreBookModel.fromJson(e.data());
+    }).toList();
+  }
+
   fetchpendingOrder(bool listen) async {
     // totalRevenue = 0;
     QuerySnapshot<Map<String, dynamic>> snapshot = await db
         .collection("My orders")
         .where("status", isEqualTo: "PENDING")
         .get();
+
     pendingOrder = snapshot.docs.length;
     print("kbjn");
     pendingOrdersList = snapshot.docs.map((e) {
       return BuyProductModel.fromJson(e.data());
     }).toList();
+
     // print("object");
 
     // print("bkjk,d.mz");
@@ -230,5 +340,18 @@ class Database with ChangeNotifier {
     if (listen) {
       notifyListeners();
     }
+  }
+
+  List<FavModel> favList = [];
+
+  fetchAllFav() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await db
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("Favorate")
+        .get();
+    favList = snapshot.docs.map((e) {
+      return FavModel.fromJson(e.data());
+    }).toList();
   }
 }

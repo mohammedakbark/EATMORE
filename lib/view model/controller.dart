@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eatmore/model/add_new_item.dart';
 import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/user/sign/signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,13 +16,20 @@ class Controller with ChangeNotifier {
   DateTime selectedDate = DateTime.now();
   String? pickedate;
   selectedate(context) async {
+    final now = DateTime.now();
     selectedDate = (await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(2023, 1, 1),
+        firstDate: DateTime(now.year, now.month, now.day),
         lastDate: DateTime(2050, 12, 31)))!;
-    pickedate =
-        "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
+    if (selectedDate != DateTime.now()) {
+      pickedate =
+          "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Select correct date')));
+    }
+
     notifyListeners();
   }
 
@@ -97,6 +105,39 @@ class Controller with ChangeNotifier {
     itemPrice.clear();
     itemName.clear();
     selectedItem = "Non";
+    notifyListeners();
+  }
+
+  ////////////seraching
+  bool isSearchEnabled = false;
+  enableSearch() {
+    isSearchEnabled = true;
+    notifyListeners();
+  }
+
+  disableSearch() {
+    isSearchEnabled = false;
+    notifyListeners();
+  }
+
+  final db = FirebaseFirestore.instance;
+  List<AddNewItemModel> listItems = [];
+  serchTheValueInProductList() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await db.collection("Items").get();
+    listItems = snapshot.docs.map((e) {
+      return AddNewItemModel.fromJson(e.data());
+    }).toList();
+    print(listItems.length);
+    notifyListeners();
+  }
+
+  List<AddNewItemModel> searchList = [];
+  checkTheValueIsConyain(String value) {
+    searchList = listItems
+        .where((AddNewItemModel element) => element.itemName == value)
+        .toList();
+        
     notifyListeners();
   }
 }

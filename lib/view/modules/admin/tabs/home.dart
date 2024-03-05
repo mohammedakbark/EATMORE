@@ -45,189 +45,368 @@ class Home extends StatelessWidget {
                       onTap: () {
                         final data = database.pendingOrdersList;
                         showModalBottomSheet(
-                          isScrollControlled: true,
-                          context: context,
-                          backgroundColor: Colors.white,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadiusDirectional.only(
-                              topEnd: Radius.circular(25),
-                              topStart: Radius.circular(25),
-                            ),
-                          ),
-                          builder: (context) => SizedBox(
-                            height: MediaQuery.of(context).size.height *
-                                0.8, // Set your desired height here
-                            width: MediaQuery.of(context).size.width,
-                            child: SingleChildScrollView(
-                              padding: const EdgeInsetsDirectional.only(
-                                start: 20,
-                                end: 20,
-                                bottom: 30,
-                                top: 8,
+                            isScrollControlled: true,
+                            context: context,
+                            backgroundColor: Colors.white,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadiusDirectional.only(
+                                topEnd: Radius.circular(25),
+                                topStart: Radius.circular(25),
                               ),
-                              // Add your content here
-
-                              child: Consumer<Database>(
-                                  builder: (context, instence, child) {
-                                return FutureBuilder(
-                                    future: instence.fetchpendingOrder(false),
-                                    builder: (context, snapshot) {
-                                      return Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 3,
-                                            color: HexColor("C1C8D2"),
-                                          ),
-                                          const SizedBox(height: 19),
-                                          // Add your content here
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              "${instence.pendingOrder} Pending Orders",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          SizedBox(
-                                            height: 655,
-                                            child: instence
-                                                    .pendingOrdersList.isEmpty
-                                                ? const Center(
-                                                    child: Text(
-                                                        "No Pending Orders"),
-                                                  )
-                                                : snapshot.connectionState ==
-                                                        ConnectionState.waiting
-                                                    ? indicator
-                                                    : ListView.builder(
-                                                        itemCount: instence
-                                                            .pendingOrdersList
-                                                            .length,
-                                                        itemBuilder:
-                                                            (context, index) {
-                                                          return Align(
-                                                            alignment: Alignment
-                                                                .centerLeft,
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      top:
-                                                                          11.0),
-                                                              child: Row(
-                                                                children: [
-                                                                  Container(
-                                                                    height: 95,
-                                                                    width: 100,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10),
-                                                                      image: DecorationImage(
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          image: NetworkImage(instence
-                                                                              .pendingOrdersList[index]
-                                                                              .cartItemModel
-                                                                              .itemImage)),
-                                                                    ),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                        .only(
-                                                                        left:
-                                                                            5.0),
-                                                                    child:
-                                                                        Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Text(
-                                                                            instence.pendingOrdersList[index].cartItemModel.itemName,
-                                                                            style: const TextStyle(fontWeight: FontWeight.bold)),
-                                                                        const SizedBox(
-                                                                            height:
-                                                                                5),
-                                                                        Text(
-                                                                            "Token No. ${instence.pendingOrdersList[index].tokenNo}",
-                                                                            style:
-                                                                                TextStyle(color: HexColor("9C9BA6"))),
-                                                                        const SizedBox(
-                                                                            height:
-                                                                                5),
-                                                                        Row(
-                                                                          children: [
-                                                                            Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Text("Quantity ${instence.pendingOrdersList[index].cartItemModel.quantity}", style: TextStyle(color: HexColor("9C9BA6"))),
-                                                                                const SizedBox(height: 5),
-                                                                                Text("₹ ${instence.pendingOrdersList[index].cartItemModel.itemPrice}", style: const TextStyle(fontWeight: FontWeight.bold)),
-                                                                                const SizedBox(height: 5),
-                                                                              ],
-                                                                            ),
-                                                                            const SizedBox(width: 5),
-                                                                            InkWell(
-                                                                              onTap: () {
-                                                                                if (instence.pendingOrdersList[index].status == "PENDING") {
-                                                                                  instence.updatebroughtProductStatus(data[index].id, "DONE");
-                                                                                  // instence.fetchpendingOrder(true);
-                                                                                }
-                                                                              },
-                                                                              child: Container(
-                                                                                alignment: Alignment.center,
-                                                                                height: 44,
-                                                                                width: 65,
-                                                                                decoration: BoxDecoration(
-                                                                                  color: HexColor("54E70F"),
-                                                                                  borderRadius: BorderRadius.circular(6),
-                                                                                ),
-                                                                                child: const Text("Done", style: TextStyle(color: Colors.white)),
-                                                                              ),
-                                                                            ),
-                                                                            const SizedBox(width: 5),
-                                                                            InkWell(
-                                                                              onTap: () {
-                                                                                if (instence.pendingOrdersList[index].status == "PENDING") {
-                                                                                  instence.updatebroughtProductStatus(data[index].id, "CANCELED");
-                                                                                  // instence.fetchpendingOrder(true);
-                                                                                }
-                                                                              },
-                                                                              child: Container(
-                                                                                alignment: Alignment.center,
-                                                                                height: 44,
-                                                                                width: 66,
-                                                                                decoration: BoxDecoration(
-                                                                                  border: Border.all(color: HexColor("FF3326")),
-                                                                                  borderRadius: BorderRadius.circular(6),
-                                                                                ),
-                                                                                child: Text("Cancel", style: TextStyle(color: HexColor("FF3326"))),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              }),
                             ),
-                          ),
-                        );
+                            builder: (context) {
+                              return DefaultTabController(
+                                length: 2,
+                                child: SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.8, // Set your desired height here
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Column(
+                                    children: [
+                                      const TabBar(tabs: [
+                                        Tab(
+                                          child: Text("O R D E R"),
+                                        ),
+                                        Tab(
+                                          child: Text("P R E - O R D E R"),
+                                        )
+                                      ]),
+                                      Expanded(
+                                        child: TabBarView(children: [
+                                          SingleChildScrollView(
+                                            padding: const EdgeInsetsDirectional
+                                                .only(
+                                              start: 20,
+                                              end: 20,
+                                              bottom: 30,
+                                              top: 8,
+                                            ),
+                                            // Add your content here
+
+                                            child: Consumer<Database>(builder:
+                                                (context, instence, child) {
+                                              return FutureBuilder(
+                                                  future: instence
+                                                      .fetchpendingOrder(false),
+                                                  builder: (context, snapshot) {
+                                                    return Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Container(
+                                                          width: 40,
+                                                          height: 3,
+                                                          color: HexColor(
+                                                              "C1C8D2"),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 19),
+                                                        // Add your content here
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                            "${instence.pendingOrder} Pending Orders",
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 5),
+                                                        SizedBox(
+                                                          height: 655,
+                                                          child: instence
+                                                                  .pendingOrdersList
+                                                                  .isEmpty
+                                                              ? const Center(
+                                                                  child: Text(
+                                                                      "No Pending Orders"),
+                                                                )
+                                                              : snapshot.connectionState ==
+                                                                      ConnectionState
+                                                                          .waiting
+                                                                  ? indicator
+                                                                  : ListView
+                                                                      .builder(
+                                                                      itemCount: instence
+                                                                          .pendingOrdersList
+                                                                          .length,
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              index) {
+                                                                        return Column(
+                                                                          children: [
+                                                                            SizedBox(
+                                                                              height: 200,
+                                                                              width: double.infinity,
+                                                                              child: ListView.builder(
+                                                                                  itemCount: data[index].cartItemModel.length,
+                                                                                  itemBuilder: (context, cartItemIndex) {
+                                                                                    return Align(
+                                                                                      alignment: Alignment.centerLeft,
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.only(top: 11.0),
+                                                                                        child: Row(
+                                                                                          children: [
+                                                                                            Container(
+                                                                                              height: 95,
+                                                                                              width: 100,
+                                                                                              decoration: BoxDecoration(
+                                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                                image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(instence.pendingOrdersList[index].cartItemModel[cartItemIndex].itemImage)),
+                                                                                              ),
+                                                                                            ),
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(left: 5.0),
+                                                                                              child: Column(
+                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                children: [
+                                                                                                  Text(instence.pendingOrdersList[index].cartItemModel[cartItemIndex].itemName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                                                                                  const SizedBox(height: 5),
+                                                                                                  Text("Token No. ${instence.pendingOrdersList[index].tokenNo}", style: TextStyle(color: HexColor("9C9BA6"))),
+                                                                                                  const SizedBox(height: 5),
+                                                                                                  Row(
+                                                                                                    children: [
+                                                                                                      Column(
+                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                        children: [
+                                                                                                          Text("Quantity ${instence.pendingOrdersList[index].cartItemModel[cartItemIndex].quantity}", style: TextStyle(color: HexColor("9C9BA6"))),
+                                                                                                          const SizedBox(height: 5),
+                                                                                                          Text("₹ ${instence.pendingOrdersList[index].cartItemModel[cartItemIndex].itemPrice}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                                                                                          const SizedBox(height: 5),
+                                                                                                        ],
+                                                                                                      ),
+                                                                                                      const SizedBox(width: 5),
+                                                                                                    ],
+                                                                                                  ),
+                                                                                                ],
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    );
+                                                                                  }),
+                                                                            ),
+                                                                            Row(
+                                                                              children: [
+                                                                                InkWell(
+                                                                                  onTap: () {
+                                                                                    if (instence.pendingOrdersList[index].status == "PENDING") {
+                                                                                      instence.updatebroughtProductStatus(data[index].purchaseId, "DONE");
+                                                                                      // instence.fetchpendingOrder(true);
+                                                                                    }
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    alignment: Alignment.center,
+                                                                                    height: 44,
+                                                                                    width: 65,
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: HexColor("54E70F"),
+                                                                                      borderRadius: BorderRadius.circular(6),
+                                                                                    ),
+                                                                                    child: const Text("Done", style: TextStyle(color: Colors.white)),
+                                                                                  ),
+                                                                                ),
+                                                                                const SizedBox(width: 5),
+                                                                                InkWell(
+                                                                                  onTap: () {
+                                                                                    if (instence.pendingOrdersList[index].status == "PENDING") {
+                                                                                      instence.updatebroughtProductStatus(data[index].purchaseId, "CANCELED");
+                                                                                      // instence.fetchpendingOrder(true);
+                                                                                    }
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    alignment: Alignment.center,
+                                                                                    height: 44,
+                                                                                    width: 66,
+                                                                                    decoration: BoxDecoration(
+                                                                                      border: Border.all(color: HexColor("FF3326")),
+                                                                                      borderRadius: BorderRadius.circular(6),
+                                                                                    ),
+                                                                                    child: Text("Cancel", style: TextStyle(color: HexColor("FF3326"))),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            )
+                                                                          ],
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  });
+                                            }),
+                                          ),
+                                          //----------------------------------------pre order
+                                          SingleChildScrollView(
+                                            padding: const EdgeInsetsDirectional
+                                                .only(
+                                              start: 20,
+                                              end: 20,
+                                              bottom: 30,
+                                              top: 8,
+                                            ),
+                                            // Add your content here
+
+                                            child: Consumer<Database>(builder:
+                                                (context, instence, child) {
+                                              return FutureBuilder(
+                                                  future: instence
+                                                      .fetchPEndingPreOrder(),
+                                                  builder: (context, snapshot) {
+                                                    return Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Container(
+                                                          width: 40,
+                                                          height: 3,
+                                                          color: HexColor(
+                                                              "C1C8D2"),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 19),
+                                                        // Add your content here
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                            "${instence.prependingOrderList.length} Pending Orders",
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 5),
+                                                        SizedBox(
+                                                            height: 655,
+                                                            child: instence
+                                                                    .pendingOrdersList
+                                                                    .isEmpty
+                                                                ? const Center(
+                                                                    child: Text(
+                                                                        "No Pending Orders"),
+                                                                  )
+                                                                : snapshot.connectionState ==
+                                                                        ConnectionState
+                                                                            .waiting
+                                                                    ? indicator
+                                                                    : SizedBox(
+                                                                        height:
+                                                                            200,
+                                                                        width: double
+                                                                            .infinity,
+                                                                        child: ListView.builder(
+                                                                            itemCount: instence.prependingOrderList.length,
+                                                                            itemBuilder: (context, index) {
+                                                                              return Align(
+                                                                                alignment: Alignment.centerLeft,
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.only(top: 11.0),
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      FutureBuilder(
+                                                                                          future: instence.fetchSelectedProductImage(instence.prependingOrderList[index].itemId),
+                                                                                          builder: (context, snap) {
+                                                                                            if (snap.connectionState == ConnectionState.waiting) {
+                                                                                              return indicator;
+                                                                                            }
+                                                                                            return Container(
+                                                                                              height: 95,
+                                                                                              width: 100,
+                                                                                              decoration: BoxDecoration(
+                                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                                image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(instence.product!.itemImage)),
+                                                                                              ),
+                                                                                            );
+                                                                                          }),
+                                                                                      Padding(
+                                                                                        padding: const EdgeInsets.only(left: 5.0),
+                                                                                        child: Column(
+                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                          children: [
+                                                                                            Text(instence.prependingOrderList[index].itemName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                                                                            const SizedBox(height: 5),
+                                                                                            Text("Token No. ${instence.prependingOrderList[index].tokenNo}", style: TextStyle(color: HexColor("9C9BA6"))),
+                                                                                            const SizedBox(height: 5),
+                                                                                            Row(
+                                                                                              children: [
+                                                                                                Column(
+                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                  children: [
+                                                                                                    Text("Quantity ${instence.prependingOrderList[index].quantity}", style: TextStyle(color: HexColor("9C9BA6"))),
+                                                                                                    const SizedBox(height: 5),
+                                                                                                    Text("₹ ${instence.prependingOrderList[index].price}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                                                                                    const SizedBox(height: 5),
+                                                                                                  ],
+                                                                                                ),
+                                                                                                const SizedBox(width: 5),
+                                                                                                InkWell(
+                                                                                                  onTap: () {
+                                                                                                    if (instence.prependingOrderList[index].status == "PENDING") {
+                                                                                                      instence.updatepreOrderStatus(instence.prependingOrderList[index].prebookId, "DONE");
+                                                                                                      // instence.fetchpendingOrder(true);
+                                                                                                    }
+                                                                                                  },
+                                                                                                  child: Container(
+                                                                                                    alignment: Alignment.center,
+                                                                                                    height: 44,
+                                                                                                    width: 65,
+                                                                                                    decoration: BoxDecoration(
+                                                                                                      color: HexColor("54E70F"),
+                                                                                                      borderRadius: BorderRadius.circular(6),
+                                                                                                    ),
+                                                                                                    child: const Text("Done", style: TextStyle(color: Colors.white)),
+                                                                                                  ),
+                                                                                                ),
+                                                                                                const SizedBox(width: 5),
+                                                                                                InkWell(
+                                                                                                  onTap: () {
+                                                                                                    if (instence.prependingOrderList[index].status == "PENDING") {
+                                                                                                      instence.updatepreOrderStatus(instence.prependingOrderList[index].prebookId, "CANCELED");
+                                                                                                      // instence.fetchpendingOrder(true);
+                                                                                                    }
+                                                                                                  },
+                                                                                                  child: Container(
+                                                                                                    alignment: Alignment.center,
+                                                                                                    height: 44,
+                                                                                                    width: 66,
+                                                                                                    decoration: BoxDecoration(
+                                                                                                      border: Border.all(color: HexColor("FF3326")),
+                                                                                                      borderRadius: BorderRadius.circular(6),
+                                                                                                    ),
+                                                                                                    child: Text("Cancel", style: TextStyle(color: HexColor("FF3326"))),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              );
+                                                                            }),
+                                                                      )),
+                                                      ],
+                                                    );
+                                                  });
+                                            }),
+                                          ),
+                                        ]),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
                       },
                       child: Container(
                         height: 105,
@@ -244,7 +423,7 @@ class Home extends StatelessWidget {
                                 : Text(
                                     database.pendingOrder == null
                                         ? "0"
-                                        : database.pendingOrder.toString(),
+                                        : "${database.pendingOrder! + database.prependingOrderList.length}",
                                     style: TextStyle(
                                       color: HexColor("32343E"),
                                       fontWeight: FontWeight.bold,

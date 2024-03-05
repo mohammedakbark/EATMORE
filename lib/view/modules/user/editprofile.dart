@@ -42,28 +42,28 @@ class EditProfile extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: HexColor("E1FED3"),
-                      radius: 50,
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: CircleAvatar(
-                        backgroundColor: HexColor("54E70F"),
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // Stack(
+                //   children: [
+                //     CircleAvatar(
+                //       backgroundColor: HexColor("E1FED3"),
+                //       radius: 50,
+                //     ),
+                //     Positioned(
+                //       bottom: 0,
+                //       right: 0,
+                //       child: CircleAvatar(
+                //         backgroundColor: HexColor("54E70F"),
+                //         child: IconButton(
+                //           onPressed: () {},
+                //           icon: const Icon(
+                //             Icons.edit,
+                //             color: Colors.white,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 const SizedBox(
                   height: 30,
                 ),
@@ -208,7 +208,11 @@ class EditProfile extends StatelessWidget {
                                   number: conNumber),
                               context)
                           .then((value) {
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => UserBottomNavigation(),
+                            ),
+                            (route) => false);
                       });
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(

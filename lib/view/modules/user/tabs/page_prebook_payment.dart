@@ -1,28 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatmore/model/buy_product_model.dart';
 import 'package:eatmore/model/cart_item_model.dart';
+import 'package:eatmore/model/pre_book_model.dart';
+import 'package:eatmore/utils/const.dart';
+import 'package:eatmore/utils/showmessage.dart';
 import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/user/paymentsuccses.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class Payment extends StatefulWidget {
-  double subToalAmount;
-  List<CartItemModel> cartItemModelList;
-  Payment(
-      {super.key,
-      required this.subToalAmount,
-      required this.cartItemModelList});
+class PreOrderPaymentPage extends StatefulWidget {
+  String subToalAmount;
+  String qty;
+  String item;
+  String pickdate;
+   String itemId;   
+
+  PreOrderPaymentPage({
+    super.key,
+    
+    required this.subToalAmount,
+    required this.item,required this.itemId,required this.pickdate,
+  required this.qty
+  });
 
   @override
-  State<Payment> createState() => _PaymentState();
+  State<PreOrderPaymentPage> createState() => _PreOrderPaymentPageState();
 }
 
-class _PaymentState extends State<Payment> {
+class _PreOrderPaymentPageState extends State<PreOrderPaymentPage> {
   var Payments;
   String time = DateFormat('h:mm a').format(DateTime.now());
 
@@ -177,37 +186,35 @@ class _PaymentState extends State<Payment> {
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: HexColor("54E70F")),
                                       onPressed: () {
-                                        String times = "${time} ${date}";
-                                        double dd = double.parse(day);
-                                        // for (final model
-                                        //     in widget.cartItemModelList) {
-                                          final now = DateTime.now();
+                                        final now = DateTime.now();
 
-                                          final stamp = Timestamp(
-                                              now.second, now.millisecond);
-                                          Provider.of<Database>(
-                                                  context,
-                                                  listen: false)
-                                              .buyaProductbyUser(
-                                                  BuyProductModel(
-                                                      day: dd,
-                                                      orderdateAndTime: times,
-                                                      paymentMode: "Cash",
-                                                      uid: FirebaseAuth.instance
-                                                          .currentUser!.uid,
-                                                      userModel:
-                                                          Provider.of<Database>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .usermodel!,
-                                                      cartItemModel:widget.cartItemModelList,
-                                                      status: "PENDING",
-                                                      tokenNo: stamp.seconds
-                                                              .toString() +
-                                                          stamp.nanoseconds
-                                                              .toString()),
-                                                );
-                                        // }
+                                        final stamp = Timestamp(
+                                            now.second, now.millisecond);
+                                        Provider.of<Database>(context,
+                                                listen: false)
+                                            .prebook(PreBookModel(
+                                              paymentMode: "Cash",
+                                                price: widget.subToalAmount,
+                                                itemId:widget.itemId,
+                                                currentDate:
+                                                DateTime.now().toString(),
+                                                bookedDate:
+                                                    widget.pickdate,
+                                                itemName:
+                                                    widget.item,
+                                                quantity:
+                                                    widget.qty,
+                                                uid: FirebaseAuth
+                                                    .instance.currentUser!.uid,
+                                                status: "PENDING",
+                                                tokenNo:
+                                                    stamp.seconds.toString() +
+                                                        stamp.nanoseconds
+                                                            .toString()))
+                                            .then((value) {
+                                          showSuccessSnackBar(context,
+                                              "order is completed", green);
+                                        });
 
                                         Navigator.of(context).pushAndRemoveUntil(
                                             MaterialPageRoute(

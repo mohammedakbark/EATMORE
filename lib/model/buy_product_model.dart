@@ -3,10 +3,10 @@ import 'package:eatmore/model/user_model.dart';
 import 'package:flutter/material.dart';
 
 class BuyProductModel {
-  String? id;
+  String? purchaseId;
   String uid;
 
-  CartItemModel cartItemModel;
+  List<CartItemModel> cartItemModel;
   String orderdateAndTime;
   String status;
   double day;
@@ -20,30 +20,33 @@ class BuyProductModel {
       required this.paymentMode,
       required this.uid,
       required this.orderdateAndTime,
-      this.id,
+      this.purchaseId,
       required this.userModel,
       required this.status,
       required this.tokenNo});
   Map<String, dynamic> tojsom(ids) => {
-        "id": ids,
+        "purchaseId": ids,
         "uid": uid,
         "day": day,
         "paymentMode": paymentMode,
-        "cartItemModel": cartItemModel.toJson(cartItemModel.cartId),
+        "cartItemModel": cartItemModel.map((e) => e.toJson(e.cartId)),
         "status": status,
         "orderdateAndTime": orderdateAndTime,
         "tokenNo": tokenNo,
         "userModel": userModel.toJson(userModel.uid),
       };
   factory BuyProductModel.fromJson(Map<String, dynamic> json) {
+    var list = json["cartItemModel"] as List;
     return BuyProductModel(
         uid: json["uid"],
         day: json["day"],
         orderdateAndTime: json["orderdateAndTime"],
         paymentMode: json["paymentMode"],
-        cartItemModel: CartItemModel.fromJson(json["cartItemModel"]),
+        cartItemModel: list.map((e) {
+          return CartItemModel.fromJson(e);
+        }).toList(),
         userModel: UserModel.fromJson(json["userModel"]),
-        id: json["id"],
+        purchaseId: json["purchaseId"],
         status: json["status"],
         tokenNo: json["tokenNo"]);
   }

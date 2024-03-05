@@ -13,8 +13,6 @@ class Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<Orders> {
- 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,124 +54,141 @@ class _OrdersState extends State<Orders> {
                             ),
                             itemCount: data.length,
                             itemBuilder: (context, index) {
-                              return Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 11.0),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 95,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(data[index]
-                                                .cartItemModel
-                                                .itemImage),
+                              return SizedBox(
+                                height: 200,
+                                width: double.infinity,
+                                child: ListView.builder(
+                                  itemCount: data[index].cartItemModel.length,
+                                    itemBuilder: (context, cartItemIndex) {
+                                  return Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 11.0),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            height: 95,
+                                            width: 100,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: NetworkImage(data[index]
+                                                    .cartItemModel[
+                                                        cartItemIndex]
+                                                    .itemImage),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 5.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                data[index]
-                                                    .cartItemModel
-                                                    .itemName,
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            const SizedBox(height: 5),
-                                            Text(
-                                                "Token No. ${data[index].tokenNo}",
-                                                style: TextStyle(
-                                                    color: HexColor("9C9BA6"))),
-                                            const SizedBox(height: 5),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                Text(
+                                                    data[index]
+                                                        .cartItemModel[
+                                                            cartItemIndex]
+                                                        .itemName,
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                    "Token No. ${data[index].tokenNo}",
+                                                    style: TextStyle(
+                                                        color: HexColor(
+                                                            "9C9BA6"))),
+                                                const SizedBox(height: 5),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
-                                                    Text(
-                                                        "Quantity :${data[index].cartItemModel.quantity.toString()}",
-                                                        style: TextStyle(
-                                                            color: HexColor(
-                                                                "9C9BA6"))),
-                                                    const SizedBox(height: 5),
-                                                    Text(
-                                                        "₹ ${data[index].cartItemModel.itemPrice}",
-                                                        style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    const SizedBox(height: 5),
-                                                  ],
-                                                ),
-                                                const SizedBox(width: 85),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    // database
-                                                    //     .updatebroughtProductStatus(
-                                                    //         data[index].id,
-                                                    //         data[index].status ==
-                                                    //                 "PENDING"
-                                                    //             ? "ACCEPTED"
-                                                    //             : "PENDING");
-                                                    // // Toggle the order status between "Pending" and "Accepted";
-                                                  },
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    height: 44,
-                                                    width: 66,
-                                                    decoration: BoxDecoration(
-                                                      border: data[index]
-                                                                  .status ==
-                                                              "PENDING"
-                                                          ? Border.all(
-                                                              color: HexColor(
-                                                                  "FF3326"))
-                                                          : null,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              6),
-                                                      color: data[index]
-                                                                  .status ==
-                                                              "DONE"
-                                                          ? HexColor("54E70F")
-                                                          : null,
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                            "Quantity :${data[index].cartItemModel[cartItemIndex].quantity.toString()}",
+                                                            style: TextStyle(
+                                                                color: HexColor(
+                                                                    "9C9BA6"))),
+                                                        const SizedBox(
+                                                            height: 5),
+                                                        Text(
+                                                            "₹ ${data[index].cartItemModel[cartItemIndex].itemPrice}",
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                        const SizedBox(
+                                                            height: 5),
+                                                      ],
                                                     ),
-                                                    child: Text(
-                                                      data[index].status,
-                                                      style: TextStyle(
-                                                        color: data[index]
-                                                                    .status ==
-                                                                "DONE"
-                                                            ? Colors.white
-                                                            : HexColor(
-                                                                "FF3326"),
+                                                    const SizedBox(width: 85),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        // database
+                                                        //     .updatebroughtProductStatus(
+                                                        //         data[index].id,
+                                                        //         data[index].status ==
+                                                        //                 "PENDING"
+                                                        //             ? "ACCEPTED"
+                                                        //             : "PENDING");
+                                                        // // Toggle the order status between "Pending" and "Accepted";
+                                                      },
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        height: 44,
+                                                        width: 66,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: data[index]
+                                                                      .status ==
+                                                                  "PENDING"
+                                                              ? Border.all(
+                                                                  color: HexColor(
+                                                                      "FF3326"))
+                                                              : null,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(6),
+                                                          color: data[index]
+                                                                      .status ==
+                                                                  "DONE"
+                                                              ? HexColor(
+                                                                  "54E70F")
+                                                              : null,
+                                                        ),
+                                                        child: Text(
+                                                          data[index].status,
+                                                          style: TextStyle(
+                                                            color: data[index]
+                                                                        .status ==
+                                                                    "DONE"
+                                                                ? Colors.white
+                                                                : HexColor(
+                                                                    "FF3326"),
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
+                                    ),
+                                  );
+                                }),
                               );
                             },
                           );

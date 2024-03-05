@@ -1,7 +1,17 @@
+import 'dart:ffi';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eatmore/model/pre_book_model.dart';
+import 'package:eatmore/utils/const.dart';
+import 'package:eatmore/utils/instence.dart';
+import 'package:eatmore/utils/showmessage.dart';
 import 'package:eatmore/view%20model/controller.dart';
 import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/user/Maintenance%20screen.dart';
 import 'package:eatmore/view/modules/user/navigation_user.dart';
+import 'package:eatmore/view/modules/user/payment.dart';
+import 'package:eatmore/view/modules/user/tabs/page_prebook_payment.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -19,14 +29,24 @@ class _PreeBookingState extends State<PreeBooking> {
 
   String mavalue = "Select item";
   String? selectedvalue;
-  List<String> categories = ["Select item"];
+  String? selectedID;
+  String? selectedPrice;
+  String? totalPrice;
+  // List<String> categories = ["Select item"];
+
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> myCategory = [
+      {"name": "Select item", "id": "Select item", "price": "Select item"}
+    ];
     final list = Provider.of<Database>(context, listen: false).itemList;
     for (var i in list) {
-      categories.add(i.itemName);
+      // categories.add(i.itemName);
+      myCategory
+          .add({"name": i.itemName, "id": i.itemId, "price": i.itemPrice});
     }
-    print(categories.length);
+    print(myCategory);
+    // print(myCategory);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Prebook",
@@ -58,16 +78,22 @@ class _PreeBookingState extends State<PreeBooking> {
                         borderSide: BorderSide(color: HexColor("54E70F"))),
                   ),
                   value: mavalue,
-                  items: categories.map((e) {
-                    print(e);
+                  items: myCategory.map((e) {
                     return DropdownMenuItem(
-                      value: e,
-                      child: Text(e),
+                      value: e["id"],
+                      child: Text(e["name"].toString()),
                     );
                   }).toList(),
                   onChanged: (value) {
-                    selectedvalue = value;
-                    mavalue = value!;
+                    selectedID = value!.toString();
+                    mavalue = value.toString();
+                    print(selectedID);
+                    for (var i in myCategory) {
+                      if (i["id"] == selectedID) {
+                        selectedvalue = i["name"];
+                        selectedPrice = i["price"];
+                      }
+                    }
                   }),
               const SizedBox(
                 height: 12,
@@ -75,7 +101,7 @@ class _PreeBookingState extends State<PreeBooking> {
               Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Date",
+                    "Schedule Date",
                     style: TextStyle(fontSize: 15, color: HexColor("32343E")),
                   )),
               Consumer<Controller>(builder: (context, controller, child) {
@@ -119,6 +145,7 @@ class _PreeBookingState extends State<PreeBooking> {
                 height: 50,
                 child: TextFormField(
                   controller: quantityController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     // suffix: Row(
                     //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -199,58 +226,66 @@ class _PreeBookingState extends State<PreeBooking> {
                   height: 165,
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => const Maintenance()),
-                        (route) => false);
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => const Maintenance(),
-                    //     ));
-                    // if (_formKey.currentState!.validate()) {
-                    //   if (selectedvalue != null) {
-                    //     if (Provider.of<Controller>(context).pickedate !=
-                    //         null) {
-                    //       print("ok");
-                    //     } else {}
-                    //   } else {
-                    //     ScaffoldMessenger.of(context).showSnackBar(
-                    //       const SnackBar(
-                    //         content:
-                    //             Text('Please fill in all the required fields.'),
-                    //       ),
-                    //     );
-                    //   }
+              Consumer<Controller>(builder: (context, contr, child) {
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: InkWell(
+                    onTap: () {
+                      if (_formKey.currentState!.validate()) {
+                        final price = int.parse(quantityController.text) *
+                            int.parse(selectedPrice.toString());
+                        totalPrice = price.toString();
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              actionsAlignment: MainAxisAlignment.center,
+                              title: Text("Confirm Order"),
+                              content: Text(
+                                  "Total amount payable : ₹${double.parse(totalPrice!)}"),
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            PreOrderPaymentPage(
+                                              item: selectedvalue!,
+                                              itemId: selectedID!,
+                                              pickdate: contr.pickedate!,
+                                              qty: quantityController.text,
+                                                subToalAmount:totalPrice! ),
+                                      ));
+                                    },
+                                    child: Text("P A Y"))
+                              ],
+                            );
+                          },
+                        );
+                        
+                      }
 
-                    // Navigator.pushReplacement(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => const UserBottomNavigation(),
-                    //     ));
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    width: 325,
-                    decoration: BoxDecoration(
-                      color: HexColor("54E70F"),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text(
-                      "SAVE",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      //to do..............
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 50,
+                      width: 325,
+                      decoration: BoxDecoration(
+                        color: HexColor("54E70F"),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        "SAVE",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
+                );
+              }),
               const SizedBox(
                 height: 50,
               )
