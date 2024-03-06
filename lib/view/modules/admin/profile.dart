@@ -188,35 +188,35 @@ class _ProfileState extends State<Profile> {
               const SizedBox(
                 height: 10,
               ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Donation(),
-                      ));
-                },
-                child: Container(
-                  height: 65,
-                  width: 295,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: HexColor("E1FED3")),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.history,
-                          color: HexColor('FB6F3D'),
-                        )),
-                    title: const Text("Donation History"),
-                    trailing: const Icon(Icons.arrow_right),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
+              // InkWell(
+              //   onTap: () {
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //           builder: (context) => const Donation(),
+              //         ));
+              //   },
+              //   child: Container(
+              //     height: 65,
+              //     width: 295,
+              //     decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(10),
+              //         color: HexColor("E1FED3")),
+              //     child: ListTile(
+              //       leading: CircleAvatar(
+              //           backgroundColor: Colors.white,
+              //           child: Icon(
+              //             Icons.history,
+              //             color: HexColor('FB6F3D'),
+              //           )),
+              //       title: const Text("Donation History"),
+              //       trailing: const Icon(Icons.arrow_right),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 10,
+              // ),
               InkWell(
                 onTap: () {
                   Navigator.push(
