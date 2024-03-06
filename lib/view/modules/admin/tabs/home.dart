@@ -14,6 +14,8 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final higth = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -39,7 +41,7 @@ class Home extends StatelessWidget {
             const SizedBox(height: 15),
             Consumer<Database>(builder: (context, database, child) {
               return FutureBuilder(
-                  future: database.fetchpendingOrder(false),
+                  future: database.calculatePendingOrderLength(),
                   builder: (context, snapshot) {
                     return GestureDetector(
                       onTap: () {
@@ -73,53 +75,47 @@ class Home extends StatelessWidget {
                                       ]),
                                       Expanded(
                                         child: TabBarView(children: [
-                                          SingleChildScrollView(
-                                            padding: const EdgeInsetsDirectional
-                                                .only(
-                                              start: 20,
-                                              end: 20,
-                                              bottom: 30,
-                                              top: 8,
-                                            ),
-                                            // Add your content here
-
-                                            child: Consumer<Database>(builder:
-                                                (context, instence, child) {
-                                              return FutureBuilder(
-                                                  future: instence
-                                                      .fetchpendingOrder(false),
-                                                  builder: (context, snapshot) {
-                                                    return Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Container(
-                                                          width: 40,
-                                                          height: 3,
-                                                          color: HexColor(
-                                                              "C1C8D2"),
+                                          Consumer<Database>(builder:
+                                              (context, instence, child) {
+                                            return FutureBuilder(
+                                                future: instence
+                                                    .fetchpendingOrder(),
+                                                builder: (context, snapshot) {
+                                                  return Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Container(
+                                                        width: 40,
+                                                        height: 3,
+                                                        color:
+                                                            HexColor("C1C8D2"),
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 19),
+                                                      // Add your content here
+                                                      Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Text(
+                                                          "${instence.pendingOrdersList.length} Pending Orders",
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
                                                         ),
-                                                        const SizedBox(
-                                                            height: 19),
-                                                        // Add your content here
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Text(
-                                                            "${instence.pendingOrder} Pending Orders",
-                                                            style: const TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 5),
-                                                        SizedBox(
+                                                      ),
+                                                      const SizedBox(height: 5),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                left: 20,
+                                                                right: 20),
+                                                        child: SizedBox(
+                                                          // color: Colors.red,
                                                           height: 655,
-                                                          child: instence
-                                                                  .pendingOrdersList
-                                                                  .isEmpty
+                                                          child: data.isEmpty
                                                               ? const Center(
                                                                   child: Text(
                                                                       "No Pending Orders"),
@@ -130,18 +126,22 @@ class Home extends StatelessWidget {
                                                                   ? indicator
                                                                   : ListView
                                                                       .builder(
-                                                                      itemCount: instence
-                                                                          .pendingOrdersList
-                                                                          .length,
+                                                                      itemCount:
+                                                                          data.length,
                                                                       itemBuilder:
                                                                           (context,
                                                                               index) {
                                                                         return Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
                                                                           children: [
                                                                             SizedBox(
-                                                                              height: 200,
-                                                                              width: double.infinity,
+                                                                              // color: Colors.red,
+                                                                              // height: 200,
+                                                                              height: higth * data[index].cartItemModel.length * .13,
+                                                                              width: width * .7,
                                                                               child: ListView.builder(
+                                                                                  physics: const NeverScrollableScrollPhysics(),
                                                                                   itemCount: data[index].cartItemModel.length,
                                                                                   itemBuilder: (context, cartItemIndex) {
                                                                                     return Align(
@@ -236,11 +236,11 @@ class Home extends StatelessWidget {
                                                                       },
                                                                     ),
                                                         ),
-                                                      ],
-                                                    );
-                                                  });
-                                            }),
-                                          ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                });
+                                          }),
                                           //----------------------------------------pre order
                                           SingleChildScrollView(
                                             padding: const EdgeInsetsDirectional
@@ -287,7 +287,7 @@ class Home extends StatelessWidget {
                                                         SizedBox(
                                                             height: 655,
                                                             child: instence
-                                                                    .pendingOrdersList
+                                                                    .prependingOrderList
                                                                     .isEmpty
                                                                 ? const Center(
                                                                     child: Text(
@@ -315,14 +315,17 @@ class Home extends StatelessWidget {
                                                                                           future: instence.fetchSelectedProductImage(instence.prependingOrderList[index].itemId),
                                                                                           builder: (context, snap) {
                                                                                             if (snap.connectionState == ConnectionState.waiting) {
-                                                                                              return indicator;
+                                                                                              return const SizedBox(
+                                                                                                height: 95,
+                                                                                                width: 100,
+                                                                                              );
                                                                                             }
                                                                                             return Container(
                                                                                               height: 95,
                                                                                               width: 100,
                                                                                               decoration: BoxDecoration(
                                                                                                 borderRadius: BorderRadius.circular(10),
-                                                                                                image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(instence.product!.itemImage)),
+                                                                                                image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(snap.data!.itemImage)),
                                                                                               ),
                                                                                             );
                                                                                           }),
@@ -421,9 +424,9 @@ class Home extends StatelessWidget {
                             snapshot.connectionState == ConnectionState.waiting
                                 ? indicator
                                 : Text(
-                                    database.pendingOrder == null
+                                    database.allPendingOrderLength == null
                                         ? "0"
-                                        : "${database.pendingOrder! + database.prependingOrderList.length}",
+                                        : "${database.allPendingOrderLength}",
                                     style: TextStyle(
                                       color: HexColor("32343E"),
                                       fontWeight: FontWeight.bold,
@@ -559,26 +562,26 @@ class Home extends StatelessWidget {
                         show: true,
                         bottomTitles: SideTitles(
                             // showTitles: true,
-                            //   getTitles: (value) {
-                            //     switch (value.toInt()) {
-                            //       case 0:
-                            //         return '10AM';
-                            //       case 1:
-                            //         return '11AM';
-                            //       case 2:
-                            //         return '12PM';
-                            //       case 3:
-                            //         return '01PM';
-                            //       case 4:
-                            //         return '02PM';
-                            //       case 5:
-                            //         return '03PM';
-                            //       case 6:
-                            //         return '04PM';
-                            //       default:
-                            //         return '';
-                            //     }
-                            //   },
+                            // getTitles: (value) {
+                            //   switch (value.toInt()) {
+                            //     case 0:
+                            //       return '10AM';
+                            //     case 1:
+                            //       return '11AM';
+                            //     case 2:
+                            //       return '12PM';
+                            //     case 3:
+                            //       return '01PM';
+                            //     case 4:
+                            //       return '02PM';
+                            //     case 5:
+                            //       return '03PM';
+                            //     case 6:
+                            //       return '04PM';
+                            //     default:
+                            //       return '';
+                            //   }
+                            // },
                             ),
                         leftTitles: SideTitles(
                           showTitles: false,
@@ -631,9 +634,18 @@ class Home extends StatelessWidget {
                       maxY: 700,
                       lineBarsData: [
                         LineChartBarData(
-                          spots: instence.incomeLine.map((e) {
-                            return FlSpot(e["date"], e["income"]);
-                          }).toList(),
+                          spots: [
+                            FlSpot(0, 500),
+                            FlSpot(1, 400),
+                            FlSpot(2, 300),
+                            FlSpot(3, 450),
+                            FlSpot(4, 600),
+                            FlSpot(5, 700),
+                          ],
+                          // spots: instence.incomeLine.map((e) {
+                          //   print(e["income"]);
+                          //   return FlSpot(e["date"], e["income"]);
+                          // }).toList(),
                           isCurved: true,
                           colors: [HexColor("54E70F")],
                           barWidth: 4, // Adjust the width as needed

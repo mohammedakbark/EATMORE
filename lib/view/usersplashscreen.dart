@@ -1,11 +1,14 @@
 import 'package:eatmore/utils/const.dart';
 import 'package:eatmore/utils/instence.dart';
+import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/admin/bottomnavbar.dart';
+import 'package:eatmore/view/modules/user/Maintenance%20screen.dart';
 import 'package:eatmore/view/modules/user/navigation_user.dart';
 import 'package:eatmore/view/user0radmin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
 class UserSplash extends StatelessWidget {
   const UserSplash({Key? key}) : super(key: key);
@@ -26,14 +29,27 @@ class UserSplash extends StatelessWidget {
                 (route) => false);
           } else {
             if (FirebaseAuth.instance.currentUser!.emailVerified) {
-              Navigator.of(context).pushAndRemoveUntil(
+              Provider.of<Database>(context,listen: false)
+                  .fetchMaintanancevalue()
+                  .then((value) {
+                if (value == true) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => Maintenance()),
+                      (route) => false);
+                }else{
+                  Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                       builder: (context) => const UserBottomNavigation()),
                   (route) => false);
+
+                }
+              });
+              
             } else {
               FirebaseAuth.instance.currentUser!.delete();
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("close and open")));
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text(
+                      "Verification failed.create account once more and ensure that email is verified")));
             }
           }
         }

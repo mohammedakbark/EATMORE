@@ -65,9 +65,11 @@ class _TokensState extends State<Tokens> {
                                   itemCount: data.length,
                                   itemBuilder: (context, index) {
                                     return SizedBox(
-                                      height: 200,
+                                      height: hight / data.length * .72,
                                       width: double.infinity,
                                       child: ListView.separated(
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
                                           separatorBuilder: (context, index) =>
                                               const SizedBox(
                                                 height: 20,
@@ -300,7 +302,10 @@ class _TokensState extends State<Tokens> {
                                                             if (snap.connectionState ==
                                                                 ConnectionState
                                                                     .waiting) {
-                                                              return indicator;
+                                                              return SizedBox(
+                                                                height: 70,
+                                                                width: 75,
+                                                              );
                                                             }
                                                             return Container(
                                                               height: 70,

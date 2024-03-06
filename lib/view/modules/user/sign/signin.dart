@@ -1,7 +1,10 @@
 import 'package:eatmore/utils/instence.dart';
+import 'package:eatmore/view%20model/database.dart';
+import 'package:eatmore/view/modules/user/Maintenance%20screen.dart';
 import 'package:eatmore/view/modules/user/navigation_user.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
 class UserSigninPage extends StatefulWidget {
   const UserSigninPage({Key? key}) : super(key: key);
@@ -157,8 +160,23 @@ class _UserSigninPageState extends State<UserSigninPage> {
                     InkWell(
                         onTap: () async {
                           if (_formKey.currentState?.validate() ?? false) {
-                            await auth.login(emailController.text,
-                                passwordController.text, context,const UserBottomNavigation());
+                            Provider.of<Database>(context)
+                                .fetchMaintanancevalue()
+                                .then((value) async {
+                              if (value == true) {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const Maintenance()),
+                                    (route) => false);
+                              } else {
+                                await auth.login(
+                                    emailController.text,
+                                    passwordController.text,
+                                    context,
+                                    const UserBottomNavigation());
+                              }
+                            });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(

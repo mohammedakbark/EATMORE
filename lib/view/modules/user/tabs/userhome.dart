@@ -1,6 +1,7 @@
 import 'package:eatmore/model/add_new_item.dart';
 import 'package:eatmore/utils/const.dart';
 import 'package:eatmore/utils/instence.dart';
+import 'package:eatmore/view%20model/controller.dart';
 import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/admin/homepagefoodlist.dart';
 import 'package:eatmore/view/modules/user/menudetails.dart';
@@ -60,250 +61,374 @@ class UserHome extends StatelessWidget {
                 }
                 final data = instence.itemList;
 
-                return SingleChildScrollView(
-                  child: Column(children: [
-                    const SizedBox(height: 15),
-                    Card(
-                      margin: const EdgeInsets.all(10),
-                      elevation: 5,
-                      child: Container(
-                        height: height * .22,
-                        width: width,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [HexColor("E1FED3"), Colors.white],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 10),
-                            Text(
-                              // "${database.usermodel?.email}",
-                              "What would you",
-                              style: TextStyle(
-                                color: HexColor("32343E"),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                              ),
-                            ),
-                            Text(
-                              //  "${instence.usermodel?.email}",
-                              "like to order?",
-                              style: TextStyle(
-                                color: HexColor("32343E"),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25,
-                              ),
-                            ),
-                            Expanded(child: SizedBox()),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 8, right: 8, bottom: 20),
-                              child: SizedBox(
-                                  height: 55,
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                        prefixIcon: Icon(
-                                          Icons.search,
-                                          color: HexColor("ADAAAA"),
-                                        ),
-                                        hintText: "Search our products...",
-                                        hintStyle: TextStyle(
-                                            color: HexColor("A8A7A7")),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        enabledBorder: const OutlineInputBorder(
-                                            borderSide: BorderSide.none),
-                                        focusedBorder: const OutlineInputBorder(
-                                            borderSide: BorderSide.none)),
-                                  )),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20, top: height * .05),
-                      child: const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            " Our Menu",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 22),
-                          )),
-                    ),
-                    const SizedBox(height: 15),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: SizedBox(
-                          height: height * .12,
+                return Consumer<Controller>(builder: (context, ctrl, child) {
+                  return SingleChildScrollView(
+                    child: Column(children: [
+                      const SizedBox(height: 15),
+                      Card(
+                        margin: const EdgeInsets.all(10),
+                        elevation: 5,
+                        child: Container(
+                          height: height * .22,
                           width: width,
-                          child: data.isEmpty
-                              ? const Center(
-                                  child: Text("Loading..."),
-                                )
-                              : ListView.separated(
-                                  separatorBuilder: (context, index) {
-                                    return const SizedBox(
-                                      width: 20,
-                                    );
-                                  },
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: data.length,
-                                  itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => MenuDetails(
-                                                  itemId: data[index].itemId!,
-                                                  name: data[index].itemName,
-                                                  rating: data[index].rating,
-                                                  details:
-                                                      data[index].moreDetail,
-                                                  img: data[index].itemImage,
-                                                  price: data[index].itemPrice),
-                                            ));
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [HexColor("E1FED3"), Colors.white],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 10),
+                              Text(
+                                // "${database.usermodel?.email}",
+                                "What would you",
+                                style: TextStyle(
+                                  color: HexColor("32343E"),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30,
+                                ),
+                              ),
+                              Text(
+                                //  "${instence.usermodel?.email}",
+                                "like to order?",
+                                style: TextStyle(
+                                  color: HexColor("32343E"),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 8, right: 8, bottom: 20),
+                                child: SizedBox(
+                                  height: 55,
+                                  // child: TextField(
+                                  //   decoration: InputDecoration(
+                                  //       prefixIcon: Icon(
+                                  //         Icons.search,
+                                  //         color: HexColor("ADAAAA"),
+                                  //       ),
+                                  //       hintText: "Search our products...",
+                                  //       hintStyle: TextStyle(
+                                  //           color: HexColor("A8A7A7")),
+                                  //       filled: true,
+                                  //       fillColor: Colors.white,
+                                  //       enabledBorder: const OutlineInputBorder(
+                                  //           borderSide: BorderSide.none),
+                                  //       focusedBorder: const OutlineInputBorder(
+                                  //           borderSide: BorderSide.none)),
+                                  // )
+                                  child: Consumer<Controller>(
+                                      builder: (context, contro, child) {
+                                    return TextFormField(
+                                      onChanged: (value) {
+                                        contro.checkTheValueIsConyain(value);
                                       },
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 38,
-                                            backgroundColor: Colors.white,
-                                            backgroundImage: NetworkImage(
-                                                data[index].itemImage),
+                                      onTapOutside: (event) {
+                                        contro.disableSearch();
+                                      },
+                                      onTap: () {
+                                        contro.serchTheValueInProductList();
+                                        contro.enableSearch();
+                                      },
+                                      decoration: InputDecoration(
+                                          prefixIcon: Icon(
+                                            Icons.search,
+                                            color: HexColor("ADAAAA"),
                                           ),
-                                          Text(
-                                            data[index]
-                                                    .itemName[0]
-                                                    .toUpperCase() +
-                                                data[index]
-                                                    .itemName
-                                                    .substring(1),
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w600),
-                                          )
-                                        ],
-                                      ),
+                                          hintText: "Search our products...",
+                                          hintStyle: TextStyle(
+                                              color: HexColor("A8A7A7")),
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          enabledBorder:
+                                              const OutlineInputBorder(
+                                                  borderSide: BorderSide.none),
+                                          focusedBorder:
+                                              const OutlineInputBorder(
+                                                  borderSide: BorderSide.none)),
                                     );
-                                  },
-                                )),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: 20, top: height * .08, bottom: 10),
-                      child: const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Popular",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 22),
+                                  }),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: width,
-                      height: height * .22,
-                      child: instence.popularItemsList.isEmpty
-                          ? const Center(
-                              child: Text("Loading..!"),
-                            )
-                          : ListView.separated(
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  width: 20,
-                                );
-                              },
-                              padding: const EdgeInsets.all(5),
-                              scrollDirection: Axis.horizontal,
-                              itemCount: instence.popularItemsList.length,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => MenuDetails(
-                                              itemId: data[index].itemId!,
-                                              name: data[index].itemName,
-                                              rating: data[index].rating,
-                                              details: data[index].moreDetail,
-                                              img: data[index].itemImage,
-                                              price: data[index].itemPrice),
-                                        ));
-                                  },
-                                  child: SizedBox(
-                                    // height: height * .14,
-                                    // width: width * .45,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: height *
-                                              .15, // Set a specific height for the image container
-                                          width: width * .53,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(instence
-                                                    .popularItemsList[index]
-                                                    .itemImage),
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: width * .5,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      instence
-                                                          .popularItemsList[
-                                                              index]
+                      // ctrl.isSearchEnabled
+                      //     ? Padding(
+                      //         padding: const EdgeInsets.all(5.0),
+                      //         child: Card(
+                      //           elevation: 3,
+                      //           color: Colors.white, // Set the color to white
+                      //           child: GestureDetector(
+                      //             onTap: () {
+                      //               // Navigator.push(
+                      //               //     context,
+                      //               //     MaterialPageRoute(
+                      //               //       builder: (context) => MenuDetails(
+                      //               //           itemId: data[index].itemId!,
+                      //               //           name: data[index].itemName,
+                      //               //           rating: data[index].rating,
+                      //               //           details:
+                      //               //               data[index].moreDetail,
+                      //               //           img: data[index].itemImage,
+                      //               //           price: data[index].itemPrice),
+                      //               //     ));
+                      //             },
+                      //             child: Container(
+                      //               height: 150,
+                      //               width: 100,
+                      //               decoration: BoxDecoration(
+                      //                 borderRadius: BorderRadius.circular(10),
+                      //               ),
+                      //               margin: const EdgeInsets.all(8),
+                      //               child: Center(
+                      //                 child: Column(
+                      //                   children: [
+                      //                     CircleAvatar(
+                      //                       radius: 55,
+                      //                       backgroundImage: NetworkImage(
+                      //                           ctrl.searchList[0].itemImage),
+                      //                     ),
+                      //                     Text(
+                      //                       ctrl.searchList[0].itemName
+                      //                           .toUpperCase(),
+                      //                       style: TextStyle(
+                      //                         color:
+                      //                             Colors.black.withOpacity(.6),
+                      //                         fontWeight: FontWeight.bold,
+                      //                       ),
+                      //                     ),
+                      //                     Text(
+                      //                       "₹${ctrl.searchList[0].itemPrice}",
+                      //                       style: TextStyle(
+                      //                         color:
+                      //                             Colors.black.withOpacity(.6),
+                      //                         fontWeight: FontWeight.bold,
+                      //                       ),
+                      //                     ),
+                      //                   ],
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       )
+                      //     :
+
+                      //----------------------------------above   Serching
+                      Column(
+                        children: [
+                          const SizedBox(height: 15),
+                          Padding(
+                            padding:
+                                EdgeInsets.only(left: 20, top: height * .05),
+                            child: const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  " Our Menu",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22),
+                                )),
+                          ),
+                          const SizedBox(height: 15),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: SizedBox(
+                                height: height * .12,
+                                width: width,
+                                child: data.isEmpty
+                                    ? const Center(
+                                        child: Text("Loading..."),
+                                      )
+                                    : ListView.separated(
+                                        separatorBuilder: (context, index) {
+                                          return const SizedBox(
+                                            width: 20,
+                                          );
+                                        },
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: data.length,
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        MenuDetails(
+                                                            itemId: data[index]
+                                                                .itemId!,
+                                                            name: data[index]
+                                                                .itemName,
+                                                            rating: data[index]
+                                                                .rating,
+                                                            details: data[index]
+                                                                .moreDetail,
+                                                            img: data[index]
+                                                                .itemImage,
+                                                            price: data[index]
+                                                                .itemPrice),
+                                                  ));
+                                            },
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 38,
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      data[index].itemImage),
+                                                ),
+                                                Text(
+                                                  data[index]
+                                                          .itemName[0]
+                                                          .toUpperCase() +
+                                                      data[index]
                                                           .itemName
-                                                          .toUpperCase(),
-                                                      style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold),
+                                                          .substring(1),
+                                                  style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      )),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: 20, top: height * .08, bottom: 10),
+                            child: const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Popular",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 22),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: width,
+                            height: height * .22,
+                            child: instence.popularItemsList.isEmpty
+                                ? const Center(
+                                    child: Text("Loading..!"),
+                                  )
+                                : ListView.separated(
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(
+                                        width: 20,
+                                      );
+                                    },
+                                    padding: const EdgeInsets.all(5),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: instence.popularItemsList.length,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    MenuDetails(
+                                                        itemId:
+                                                            data[index].itemId!,
+                                                        name: data[index]
+                                                            .itemName,
+                                                        rating:
+                                                            data[index].rating,
+                                                        details: data[index]
+                                                            .moreDetail,
+                                                        img: data[index]
+                                                            .itemImage,
+                                                        price: data[index]
+                                                            .itemPrice),
+                                              ));
+                                        },
+                                        child: SizedBox(
+                                          // height: height * .14,
+                                          // width: width * .45,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: height *
+                                                    .15, // Set a specific height for the image container
+                                                width: width * .53,
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      fit: BoxFit.cover,
+                                                      image: NetworkImage(
+                                                          instence
+                                                              .popularItemsList[
+                                                                  index]
+                                                              .itemImage),
                                                     ),
-                                                    Text(
-                                                      " ₹ ${double.parse(instence.popularItemsList[index].itemPrice)}",
-                                                      style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 15),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8)),
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: width * .5,
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            instence
+                                                                .popularItemsList[
+                                                                    index]
+                                                                .itemName
+                                                                .toUpperCase(),
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          Text(
+                                                            " ₹ ${double.parse(instence.popularItemsList[index].itemPrice)}",
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 15),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
+                                                    ratingBar(data[index]
+                                                        .rating
+                                                        .toDouble())
                                                   ],
                                                 ),
                                               ),
-                                              ratingBar(
-                                                  data[index].rating.toDouble())
                                             ],
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
-                            ),
-                    )
-                  ]),
-                );
+                          )
+                        ],
+                      )
+                    ]),
+                  );
+                });
               })),
     );
   }

@@ -1,4 +1,3 @@
-
 import 'package:eatmore/view/modules/admin/tabs/home.dart';
 import 'package:eatmore/view/modules/admin/tabs/logout.dart';
 import 'package:eatmore/view/modules/admin/tabs/myfoodlist.dart';
@@ -19,7 +18,7 @@ class _BottomNavigationAdminState extends State<BottomNavigationAdmin> {
     const Home(),
     const MyfoodList(),
     const Orders(),
-    const LogOut(),
+    // const LogOut(),
     // Sitters(),
     // Trade(),
     // care(),
@@ -45,7 +44,7 @@ class _BottomNavigationAdminState extends State<BottomNavigationAdmin> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: List.generate(
-            4,
+            3,
             (int index) {
               return BottomNavItem(
                 index: index,
@@ -76,8 +75,8 @@ class _BottomNavigationAdminState extends State<BottomNavigationAdmin> {
         return Icons.article_outlined;
       case 2:
         return Icons.menu;
-      case 3:
-        return Icons.logout;
+      // case 3:
+      //   return Icons.logout;
       default:
         return Icons.home_filled;
     }

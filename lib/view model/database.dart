@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eatmore/model/addNewReview.dart';
 import 'package:eatmore/model/add_new_item.dart';
 import 'package:eatmore/model/buy_product_model.dart';
 import 'package:eatmore/model/cart_item_model.dart';
@@ -79,6 +80,11 @@ class Database with ChangeNotifier {
       isFavorate = false;
     }
     notifyListeners();
+  }
+
+  Future addNewReview(AddNewReview addNewReview) async {
+    final doc = db.collection("Reviews").doc();
+    await doc.set(addNewReview.toJson(doc.id));
   }
 
   //--------------------------------delete
@@ -162,7 +168,26 @@ class Database with ChangeNotifier {
     notifyListeners();
   }
 
+  updatemaintanence(bool newvalue) {
+    db.collection("Maintanence").doc("0000").update({"value": newvalue});
+    notifyListeners();
+  }
+
   //--------------------------------read
+  bool? maintanancevalue;
+  Future<bool?> fetchMaintanancevalue() async {
+    DocumentSnapshot<Map<String, dynamic>> docs =
+        await db.collection("Maintanence").doc("0000").get();
+    if (docs.exists) {
+      final data = docs.data();
+      maintanancevalue = data?["value"];
+    } else {
+      db.collection("Maintanence").doc("0000").set({"value": false});
+      fetchMaintanancevalue();
+    }
+    return maintanancevalue;
+  }
+
   UserModel? usermodel;
   fethcurrentUser(currentID) async {
     DocumentSnapshot<Map<String, dynamic>> docSnap =
@@ -267,7 +292,7 @@ class Database with ChangeNotifier {
   }
 
   AddNewItemModel? product;
-  Future fetchSelectedProductImage(proId) async {
+  Future<AddNewItemModel?> fetchSelectedProductImage(proId) async {
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await db.collection("Items").doc(proId).get();
     if (snapshot.exists) {
@@ -290,7 +315,40 @@ class Database with ChangeNotifier {
     }
   }
 
-  int? pendingOrder;
+  List<PreBookModel> allPreOrderList = [];
+  fetchAllPreOrderOrders() async {
+    print("P R E O R D E R ");
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await db.collection("Pre-book").get();
+    try {
+      allPreOrderList = snapshot.docs.map((e) {
+        return PreBookModel.fromJson(e.data());
+      }).toList();
+    } catch (e) {
+      print("${e}");
+    }
+  }
+
+  // int? pendingOrderLength = 0;
+  int allPendingOrderLength = 0;
+  calculatePendingOrderLength() async {
+    QuerySnapshot<Map<String, dynamic>> snaps = await db
+        .collection("Pre-book")
+        .where("status", isEqualTo: "PENDING")
+        .get();
+    QuerySnapshot<Map<String, dynamic>> snapshot = await db
+        .collection("My orders")
+        .where("status", isEqualTo: "PENDING")
+        .get();
+    int a = snaps.docs.length;
+    int b = snapshot.docs.length;
+    allPendingOrderLength = a + b;
+  }
+
+  listen() {
+    notifyListeners();
+  }
+
   int totalRevenue = 0;
   List<Map<String, dynamic>> incomeLine = [];
   List<BuyProductModel> pendingOrdersList = [];
@@ -303,16 +361,17 @@ class Database with ChangeNotifier {
     prependingOrderList = snaps.docs.map((e) {
       return PreBookModel.fromJson(e.data());
     }).toList();
+    // pendingOrderLength = pendingOrderLength! + prependingOrderList.length;
   }
 
-  fetchpendingOrder(bool listen) async {
+  fetchpendingOrder() async {
     // totalRevenue = 0;
     QuerySnapshot<Map<String, dynamic>> snapshot = await db
         .collection("My orders")
         .where("status", isEqualTo: "PENDING")
         .get();
 
-    pendingOrder = snapshot.docs.length;
+    // pendingOrderLength = pendingOrderLength! + snapshot.docs.length;
     print("kbjn");
     pendingOrdersList = snapshot.docs.map((e) {
       return BuyProductModel.fromJson(e.data());
@@ -337,9 +396,9 @@ class Database with ChangeNotifier {
 
     // print(totalRevenue);
     // print(incomeLine);
-    if (listen) {
-      notifyListeners();
-    }
+    // if (listen) {
+    //   notifyListeners();
+    // }
   }
 
   List<FavModel> favList = [];
@@ -352,6 +411,15 @@ class Database with ChangeNotifier {
         .get();
     favList = snapshot.docs.map((e) {
       return FavModel.fromJson(e.data());
+    }).toList();
+  }
+
+  List<AddNewReview> reviwList = [];
+  fetchAllReviews() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await db.collection("Reviews").get();
+    reviwList = snapshot.docs.map((e) {
+      return AddNewReview.fromJson(e.data());
     }).toList();
   }
 }

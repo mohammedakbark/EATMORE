@@ -15,64 +15,60 @@ class _MaintenanceState extends State<Maintenance> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Column(children: [
-          const SizedBox(
-            height: 79,
-          ),
-          Image.asset(
-            "img/Maintenance screen.png",
-            width: 265,
-          ),
-          const Text(
-            "We’re under maintenance",
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 19),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Text(
-            "Please check back soon just putting little touch",
-            style: TextStyle(color: HexColor("6B6E82")),
-          ),
-          Text(
-            "up on some pretty updates.",
-            style: TextStyle(color: HexColor("6B6E82")),
-          ),
-          const Expanded(
-              child: SizedBox(
-            height: 15,
-          )),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const UserBottomNavigation(),
-                  ));
-            },
-            child: Container(
-              alignment: Alignment.center,
-              height: 50,
-              width: 105,
-              decoration: BoxDecoration(
-                color: HexColor("54E70F"),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Text(
-                "Close",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+        child: Center(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "img/Maintenance screen.png",
+                  width: 265,
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 50,
-          )
-        ]),
+                const Text(
+                  "We’re under maintenance",
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 19),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Please check back soon just putting little touch",
+                  style: TextStyle(color: HexColor("6B6E82")),
+                ),
+                Text(
+                  "up on some pretty updates.",
+                  style: TextStyle(color: HexColor("6B6E82")),
+                ),
+                // const Expanded(
+                //     child: SizedBox(
+                //   height: 15,
+                // )),
+                // InkWell(
+                //   onTap: () {
+
+                //   },
+                //   child: Container(
+                //     alignment: Alignment.center,
+                //     height: 50,
+                //     width: 105,
+                //     decoration: BoxDecoration(
+                //       color: HexColor("54E70F"),
+                //       borderRadius: BorderRadius.circular(20),
+                //     ),
+                //     child: const Text(
+                //       "Close",
+                //       style: TextStyle(
+                //         color: Colors.white,
+                //         fontWeight: FontWeight.bold,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // const SizedBox(
+                //   height: 50,
+                // )
+              ]),
+        ),
       ),
     );
   }

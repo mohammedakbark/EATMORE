@@ -1,10 +1,13 @@
 import 'package:eatmore/utils/const.dart';
 import 'package:eatmore/utils/instence.dart';
+import 'package:eatmore/view%20model/database.dart';
 import 'package:eatmore/view/modules/admin/donationhistory.dart';
 import 'package:eatmore/view/modules/admin/personelnfo.dart';
 import 'package:eatmore/view/modules/admin/reviews.dart';
+import 'package:eatmore/view/modules/admin/tabs/orders.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -28,7 +31,9 @@ class _ProfileState extends State<Profile> {
         ),
         centerTitle: true,
         leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
             icon: const Icon(Icons.arrow_back_ios_new_rounded)),
       ),
       body: Container(
@@ -104,33 +109,57 @@ class _ProfileState extends State<Profile> {
               const SizedBox(
                 height: 10,
               ),
-              Container(
-                height: 65,
-                width: 295,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: HexColor("E1FED3")),
-                child: ListTile(
-                  leading: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.settings_outlined,
-                        color: HexColor("413DFB"),
-                      )),
-                  title: const Text("Maintanance"),
-                  trailing: Transform.scale(
-                    scale: 0.7, // Adjust the scale factor as needed
-                    child: Switch(
-                      value: switchValue,
-                      onChanged: (value) {
-                        setState(() {
-                          switchValue = value;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              Consumer<Database>(builder: (context, datab, child) {
+                return Container(
+                  height: 65,
+                  width: 295,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: HexColor("E1FED3")),
+                  child: FutureBuilder(
+                      future: datab.fetchMaintanancevalue(),
+                      builder: (context, snap) {
+                        return ListTile(
+                          leading: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              child: Icon(
+                                Icons.settings_outlined,
+                                color: HexColor("413DFB"),
+                              )),
+                          title: const Text("Maintanance"),
+                          trailing: Transform.scale(
+                            scale: 0.7, // Adjust the scale factor as needed
+                            child: Switch(
+                              value: datab.maintanancevalue ?? false,
+                              onChanged: (value) {
+                                datab.updatemaintanence(value);
+                              },
+                            ),
+                          ),
+                        );
+                      }),
+                );
+              }),
+              // const SizedBox(
+              //   height: 10,
+              // ),
+              // Container(
+              //   height: 65,
+              //   width: 295,
+              //   decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(10),
+              //       color: HexColor("E1FED3")),
+              //   child: ListTile(
+              //     leading: CircleAvatar(
+              //         backgroundColor: Colors.white,
+              //         child: Icon(
+              //           Icons.local_atm,
+              //           color: HexColor('FF7622'),
+              //         )),
+              //     title: const Text("Withdrawal History"),
+              //     trailing: const Icon(Icons.arrow_right),
+              //   ),
+              // ),
               const SizedBox(
                 height: 10,
               ),
@@ -141,26 +170,11 @@ class _ProfileState extends State<Profile> {
                     borderRadius: BorderRadius.circular(10),
                     color: HexColor("E1FED3")),
                 child: ListTile(
-                  leading: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.local_atm,
-                        color: HexColor('FF7622'),
-                      )),
-                  title: const Text("Withdrawal History"),
-                  trailing: const Icon(Icons.arrow_right),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                height: 65,
-                width: 295,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: HexColor("E1FED3")),
-                child: ListTile(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Orders(),
+                    ));
+                  },
                   leading: CircleAvatar(
                       backgroundColor: Colors.white,
                       child: Icon(

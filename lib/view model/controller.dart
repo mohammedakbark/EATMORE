@@ -12,6 +12,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class Controller with ChangeNotifier {
+  // String? idds = "";
+  // getId(value) {
+  //   idds = value;
+  //   notifyListeners();
+  // }
+
   bool processingImage = false;
   DateTime selectedDate = DateTime.now();
   String? pickedate;
@@ -137,7 +143,7 @@ class Controller with ChangeNotifier {
     searchList = listItems
         .where((AddNewItemModel element) => element.itemName == value)
         .toList();
-        
+
     notifyListeners();
   }
 }
