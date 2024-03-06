@@ -413,12 +413,10 @@ class Database with ChangeNotifier {
       return FavModel.fromJson(e.data());
     }).toList();
   }
-
-  List<AddNewReview> reviwList = [];
-  fetchAllReviews() async {
-    QuerySnapshot<Map<String, dynamic>> snapshot =
-        await db.collection("Reviews").get();
-    reviwList = snapshot.docs.map((e) {
+ List<AddNewReview> reviwList = [];
+  fetchAllReviews()async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await db.collection("Reviews").get();
+   reviwList = snapshot.docs.map((e) {
       return AddNewReview.fromJson(e.data());
     }).toList();
   }
