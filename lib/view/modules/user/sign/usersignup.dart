@@ -248,18 +248,18 @@ class _UserSignUpState extends State<UserSignUp> {
                 const SizedBox(
                   height: 15,
                 ),
-                Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "OR",
-                      style: TextStyle(color: HexColor("A8A7A7")),
-                    )),
-                Align(
-                    alignment: Alignment.center,
-                    child: Image.asset(
-                      "img/googleicon.png",
-                      width: 55,
-                    ))
+                // Align(
+                //     alignment: Alignment.center,
+                //     child: Text(
+                //       "OR",
+                //       style: TextStyle(color: HexColor("A8A7A7")),
+                //     )),
+                // Align(
+                //     alignment: Alignment.center,
+                //     child: Image.asset(
+                //       "img/googleicon.png",
+                //       width: 55,
+                //     ))
               ],
             ),
           ),

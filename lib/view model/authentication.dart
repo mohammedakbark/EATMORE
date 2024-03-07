@@ -61,17 +61,17 @@ class Authentication with ChangeNotifier {
           showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                    content: Container(
-                      color: Colors.white,
-                      height: 70,
-                      // width: double.infinity,
-                      child: Row(
-                        children: [
-                          const CircularProgressIndicator(),
-                          Text(
-                              "Verification Email send to ${FirebaseAuth.instance.currentUser!.email}")
-                        ],
-                      ),
+                    content: Row(
+                      children: [
+                        const CircularProgressIndicator(),
+                        Expanded(
+                          child: Text(
+                            "Verification Email send to ${FirebaseAuth.instance.currentUser!.email}",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                      ],
                     ),
                   ));
 
@@ -86,7 +86,7 @@ class Authentication with ChangeNotifier {
   signOutFromMAil(context) async {
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) =>const UserSplash()),
+        MaterialPageRoute(builder: (context) => const UserSplash()),
         (route) => false);
   }
 

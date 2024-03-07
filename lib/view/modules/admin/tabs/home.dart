@@ -196,6 +196,7 @@ class Home extends StatelessWidget {
                                                                                   onTap: () {
                                                                                     if (instence.pendingOrdersList[index].status == "PENDING") {
                                                                                       instence.updatebroughtProductStatus(data[index].purchaseId, "DONE");
+                                                                                      Navigator.of(context).pop();
                                                                                       // instence.fetchpendingOrder(true);
                                                                                     }
                                                                                   },
@@ -215,6 +216,7 @@ class Home extends StatelessWidget {
                                                                                   onTap: () {
                                                                                     if (instence.pendingOrdersList[index].status == "PENDING") {
                                                                                       instence.updatebroughtProductStatus(data[index].purchaseId, "CANCELED");
+                                                                                      Navigator.of(context).pop();
                                                                                       // instence.fetchpendingOrder(true);
                                                                                     }
                                                                                   },
@@ -354,6 +356,7 @@ class Home extends StatelessWidget {
                                                                                                   onTap: () {
                                                                                                     if (instence.prependingOrderList[index].status == "PENDING") {
                                                                                                       instence.updatepreOrderStatus(instence.prependingOrderList[index].prebookId, "DONE");
+                                                                                                      Navigator.of(context).pop();
                                                                                                       // instence.fetchpendingOrder(true);
                                                                                                     }
                                                                                                   },
@@ -373,6 +376,7 @@ class Home extends StatelessWidget {
                                                                                                   onTap: () {
                                                                                                     if (instence.prependingOrderList[index].status == "PENDING") {
                                                                                                       instence.updatepreOrderStatus(instence.prependingOrderList[index].prebookId, "CANCELED");
+                                                                                                      Navigator.of(context).pop();
                                                                                                       // instence.fetchpendingOrder(true);
                                                                                                     }
                                                                                                   },
